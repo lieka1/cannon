@@ -1,103 +1,83 @@
-import { Input, Scene } from 'phaser';
+import { Input, Physics, Scene } from "phaser";
 
-import { Actor } from './actor/actor';
-import { Text } from './actor/text';
+export class Player extends Physics.Arcade.Sprite {
+    private keyW: Input.Keyboard.Key;
+    private keyA: Input.Keyboard.Key;
+    private keyS: Input.Keyboard.Key;
+    private keyD: Input.Keyboard.Key;
+    private keySpace: Input.Keyboard.Key;
 
-export class Player extends Actor {
-  private keyW: Input.Keyboard.Key;
-  private keyA: Input.Keyboard.Key;
-  private keyS: Input.Keyboard.Key;
-  private keyD: Input.Keyboard.Key;
-  private keySpace: Input.Keyboard.Key;
-  private hpValue: Text;
+    constructor(scene: Scene, x: number, y: number) {
+        super(scene, x, y, "king");
 
-  constructor(scene: Scene, x: number, y: number) {
-    super(scene, x, y, 'king');
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
 
-    // KEYS
-    this.keyW = this.scene.input.keyboard.addKey('W');
-    this.keyA = this.scene.input.keyboard.addKey('A');
-    this.keyS = this.scene.input.keyboard.addKey('S');
-    this.keyD = this.scene.input.keyboard.addKey('D');
-    this.keySpace = this.scene.input.keyboard.addKey(32);
-    this.keySpace.on('down', (event: KeyboardEvent) => {
-    //   this.anims.play('attack', true);
-    //   this.scene.game.events.emit(EVENTS_NAME.attack);
-    });
+        // KEYS
+        this.keyW = this.scene.input.keyboard.addKey("W");
+        this.keyA = this.scene.input.keyboard.addKey("A");
+        this.keyS = this.scene.input.keyboard.addKey("S");
+        this.keyD = this.scene.input.keyboard.addKey("D");
+        this.keySpace = this.scene.input.keyboard.addKey(32);
+        this.keySpace.on("down", (event: KeyboardEvent) => {
+            //   this.anims.play('attack', true);
+            //   this.scene.game.events.emit(EVENTS_NAME.attack);
+        });
 
-    this.hpValue = new Text(this.scene, this.x, this.y - this.height, this.hp.toString())
-      .setFontSize(12)
-      .setOrigin(0.8, 0.5);
+        // PHYSICS
+        this.body.setSize(30, 30);
+        this.body.setOffset(8, 0);
 
-    // PHYSICS
-    this.getBody().setSize(30, 30);
-    this.getBody().setOffset(8, 0);
-
-    // ANIMATIONS
-    this.initAnimations();
-
-    this.on('destroy', () => {
-      this.keySpace.removeAllListeners();
-    });
-  }
-
-  update(): void {
-    this.getBody().setVelocity(0);
-
-    if (this.keyW?.isDown) {
-      this.body.velocity.y = -110;
-      !this.anims.isPlaying && this.anims.play('run', true);
+        this.on("destroy", () => {
+            this.keySpace.removeAllListeners();
+        });
     }
 
-    if (this.keyA?.isDown) {
-      this.body.velocity.x = -110;
-      this.checkFlip();
-      this.getBody().setOffset(48, 15);
-      !this.anims.isPlaying && this.anims.play('run', true);
+    update(): void {
+        (this.body as Physics.Arcade.Body).setVelocity(0);
+
+        let running = false;
+
+        if (this.keyW?.isDown) {
+            this.body.velocity.y = -110;
+            !this.anims.isPlaying && this.anims.play("player_run", true);
+
+            running = true;
+        }
+
+        if (this.keyA?.isDown) {
+            this.body.velocity.x = -110;
+            this.checkFlip();
+            this.body.setOffset(48, 15);
+            !this.anims.isPlaying && this.anims.play("player_run", true);
+            running = true;
+        }
+
+        if (this.keyS?.isDown) {
+            this.body.velocity.y = 110;
+            !this.anims.isPlaying && this.anims.play("player_run", true);
+            running = true;
+        }
+
+        if (this.keyD?.isDown) {
+            this.body.velocity.x = 110;
+            this.checkFlip();
+            this.body.setOffset(15, 15);
+            !this.anims.isPlaying && this.anims.play("player_run", true);
+            running = true;
+        }
+
+        if (!running) {
+            if (this.anims.getName() != "player_idle")
+                this.anims.play("player_idle");
+        }
     }
 
-    if (this.keyS?.isDown) {
-      this.body.velocity.y = 110;
-      !this.anims.isPlaying && this.anims.play('run', true);
+    protected checkFlip(): void {
+        if (this.body.velocity.x < 0) {
+            this.scaleX = -1;
+        } else {
+            this.scaleX = 1;
+        }
     }
-
-    if (this.keyD?.isDown) {
-      this.body.velocity.x = 110;
-      this.checkFlip();
-      this.getBody().setOffset(15, 15);
-      !this.anims.isPlaying && this.anims.play('run', true);
-    }
-
-    this.hpValue.setPosition(this.x, this.y - this.height * 0.4);
-    this.hpValue.setOrigin(0.8, 0.5);
-  }
-
-  private initAnimations(): void {
-    this.scene.anims.create({
-      key: 'run',
-      frames: this.scene.anims.generateFrameNames('a-king', {
-        prefix: 'run-',
-        end: 7,
-      }),
-      frameRate: 8,
-    });
-
-    this.scene.anims.create({
-      key: 'attack',
-      frames: this.scene.anims.generateFrameNames('a-king', {
-        prefix: 'attack-',
-        end: 2,
-      }),
-      frameRate: 8,
-    });
-  }
-
-  public getDamage(value?: number): void {
-    super.getDamage(value);
-    this.hpValue.setText(this.hp.toString());
-
-    // if (this.hp <= 0) {
-    //   this.scene.game.events.emit(EVENTS_NAME.gameEnd, GameStatus.LOSE);
-    // }
-  }
 }

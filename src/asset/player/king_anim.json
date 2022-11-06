@@ -1,0 +1,64 @@
+{
+    "anims": [
+        {
+            "key": "player_run",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 8,
+            "frames": [
+                {
+                    "key": "king",
+                    "frame": "king_run_1"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_2"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_3"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_4"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_5"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_6"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_7"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_run_8"
+                }
+            ]
+        },
+        {
+            "key": "player_idle",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 2,
+            "frames": [
+                {
+                    "key": "king",
+                    "frame": "king_idle_1"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_idle_2"
+                },
+                {
+                    "key": "king",
+                    "frame": "king_idle_1"
+                }
+            ]
+        }
+    ]
+}

@@ -5,6 +5,13 @@ import backgroundConf from "./asset/map/background.json";
 import background_groud from "./asset/map/background_ground.png";
 //@ts-ignore
 import background_castle from "./asset/map/background_castle.png";
+//@ts-ignore
+import player_img from "./asset/player/king.png";
+//@ts-ignore
+import player_atlas from "./asset/player/king_atlas.json";
+//@ts-ignore
+import player_anim from "./asset/player/king_anim.json";
+
 import { Player } from "./player";
 
 export default class Main extends Phaser.Scene {
@@ -48,6 +55,20 @@ export default class Main extends Phaser.Scene {
 
     ////////////////////////////////////////////
     ///
+    ///             Player
+    ///
+    ////////////////////////////////////////////
+    loadPlayer() {
+        this.load.atlas("king", player_img, player_atlas);
+        this.load.animation("player_anim", player_anim);
+    }
+
+    createPlayer() {
+        this.player = new Player(this, 100, 100);
+    }
+
+    ////////////////////////////////////////////
+    ///
     ///             Camera
     ///
     ////////////////////////////////////////////
@@ -65,14 +86,16 @@ export default class Main extends Phaser.Scene {
 
     preload() {
         this.loadMap();
+        this.loadPlayer();
     }
 
     create() {
-        this.player = new Player(this, 100, 100);
-
         this.createMap();
+        this.createPlayer();
         this.initCamera();
     }
 
-    update() {}
+    update() {
+        this.player.update();
+    }
 }
