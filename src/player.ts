@@ -9,9 +9,9 @@ export class Player extends Physics.Arcade.Sprite {
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, "king");
-
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.setCollideWorldBounds(true);
 
         // KEYS
         this.keyW = this.scene.input.keyboard.addKey("W");
@@ -25,8 +25,7 @@ export class Player extends Physics.Arcade.Sprite {
         });
 
         // PHYSICS
-        this.body.setSize(30, 30);
-        this.body.setOffset(8, 0);
+        this.body.setSize(32, 32);
 
         this.on("destroy", () => {
             this.keySpace.removeAllListeners();
@@ -39,38 +38,47 @@ export class Player extends Physics.Arcade.Sprite {
         let running = false;
 
         if (this.keyW?.isDown) {
-            this.body.velocity.y = -110;
-            !this.anims.isPlaying && this.anims.play("player_run", true);
+            this.body.velocity.y = -200;
+            this.anims.getName() != "player_run" &&
+                this.anims.play("player_run", true);
 
             running = true;
         }
 
         if (this.keyA?.isDown) {
-            this.body.velocity.x = -110;
-            this.checkFlip();
-            this.body.setOffset(48, 15);
-            !this.anims.isPlaying && this.anims.play("player_run", true);
+            this.body.velocity.x = -200;
+            this.scaleX = -1;
+            this.setOffset(32, 0);
+
+            this.anims.getName() != "player_run" &&
+                this.anims.play("player_run", true);
             running = true;
         }
 
         if (this.keyS?.isDown) {
-            this.body.velocity.y = 110;
-            !this.anims.isPlaying && this.anims.play("player_run", true);
+            this.body.velocity.y = 200;
+            this.anims.getName() != "player_run" &&
+                this.anims.play("player_run", true);
             running = true;
         }
 
         if (this.keyD?.isDown) {
-            this.body.velocity.x = 110;
-            this.checkFlip();
-            this.body.setOffset(15, 15);
-            !this.anims.isPlaying && this.anims.play("player_run", true);
+            this.body.velocity.x = 200;
+            this.scaleX = 1;
+            this.setOffset(0, 0);
+
+            this.anims.getName() != "player_run" &&
+                this.anims.play("player_run", true);
+                
             running = true;
         }
+
+        this.body.velocity.limit(200)
 
         if (!running) {
             if (this.anims.getName() != "player_idle")
                 this.anims.play("player_idle");
-        }
+        } 
     }
 
     protected checkFlip(): void {

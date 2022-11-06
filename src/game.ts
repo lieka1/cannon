@@ -15,9 +15,8 @@ import player_anim from "./asset/player/king_anim.json";
 import { Player } from "./player";
 
 export default class Main extends Phaser.Scene {
-    bg: any;
-    trees: any;
     player: Player;
+    private wallsLayer!:  Phaser.Tilemaps.TilemapLayer;
 
     constructor() {
         super("main");
@@ -45,12 +44,19 @@ export default class Main extends Phaser.Scene {
             "background_castle",
             "background_castle"
         );
-        const layer1 = map.createLayer(
-            "Tile Layer 1",
+        this.wallsLayer = map.createLayer(
+            "background",
             [tileSet, tileSet1],
             0,
             0
         );
+
+        this.wallsLayer.setCollisionByProperty({ col: true });
+
+    
+        this.wallsLayer.renderDebug(this.add.graphics());
+    
+        this.physics.world.setBounds(0, 0, this.wallsLayer.width, this.wallsLayer.height);
     }
 
     ////////////////////////////////////////////
@@ -65,6 +71,8 @@ export default class Main extends Phaser.Scene {
 
     createPlayer() {
         this.player = new Player(this, 100, 100);
+
+        this.physics.add.collider(this.player, this.wallsLayer);
     }
 
     ////////////////////////////////////////////
@@ -79,7 +87,7 @@ export default class Main extends Phaser.Scene {
             this.game.scale.height
         );
         this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-        this.cameras.main.setZoom(2);
+        this.cameras.main.setZoom(1);
     }
 
     createBullet() {}
