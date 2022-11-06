@@ -51,6 +51,8 @@ export default class Main extends Phaser.Scene {
             0
         );
 
+        map.createLayer("tree", tileSet);
+
         this.wallsLayer.setCollisionByProperty({ col: true });
 
     

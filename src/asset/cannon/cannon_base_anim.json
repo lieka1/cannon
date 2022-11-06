@@ -1,0 +1,44 @@
+{
+    "anims": [
+        {
+            "key": "shot",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 36,
+            "frames": [
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_1"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_2"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_3"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_4"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_4"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_4"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_3"
+                },
+                {
+                    "key": "cannon_base",
+                    "frame": "cannon_base_2"
+                }
+            ]
+        }
+    ]
+}
