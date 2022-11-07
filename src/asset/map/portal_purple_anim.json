@@ -1,0 +1,116 @@
+{
+    "anims": [
+        {
+            "key": "poral_purple_close",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 9,
+            "frames": [
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_16"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_17"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_18"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_19"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_20"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_21"
+                }
+            ]
+        },
+        {
+            "key": "portal_purple_open",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 9,
+            "frames": [
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_8"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_9"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_10"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_11"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_12"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_13"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_14"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_15"
+                }
+            ]
+        },
+        {
+            "key": "portal_purple_run",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 9,
+            "frames": [
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_0"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_1"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_2"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_3"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_4"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_5"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_6"
+                },
+                {
+                    "key": "portal_purple",
+                    "frame": "portal_purple_7"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,120 @@
+{
+    "anims": [
+        {
+            "key": "check_open",
+            "type": "frames",
+            "repeat": 1,
+            "frameRate": 3,
+            "frames": [
+                {
+                    "key": "enemy",
+                    "frame": "chest_full_open_anim_f0"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "chest_full_open_anim_f1"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "chest_full_open_anim_f2"
+                }
+            ]
+        },
+        {
+            "key": "big_zombi_idle",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_idle_anim_f0"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_idle_anim_f1"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_idle_anim_f2"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_idle_anim_f3"
+                }
+            ]
+        },
+        {
+            "key": "big_zombie_run",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_run_anim_f0"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_run_anim_f1"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_run_anim_f2"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_zombie_run_anim_f3"
+                }
+            ]
+        },
+        {
+            "key": "big_demon_run",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_run_anim_f0"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_run_anim_f1"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_run_anim_f2"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_run_anim_f3"
+                }
+            ]
+        },
+        {
+            "key": "big_demon_idle",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_idle_anim_f0"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_idle_anim_f1"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_idle_anim_f2"
+                },
+                {
+                    "key": "enemy",
+                    "frame": "big_demon_idle_anim_f3"
+                }
+            ]
+        }
+    ]
+}
