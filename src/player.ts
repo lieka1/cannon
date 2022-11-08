@@ -6,6 +6,7 @@ export class Player extends Physics.Arcade.Sprite {
     private keyS: Input.Keyboard.Key;
     private keyD: Input.Keyboard.Key;
     private keySpace: Input.Keyboard.Key;
+    private playerSpeed = 1000;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, "king");
@@ -38,7 +39,7 @@ export class Player extends Physics.Arcade.Sprite {
         let running = false;
 
         if (this.keyW?.isDown) {
-            this.body.velocity.y = -200;
+            this.body.velocity.y = -this.playerSpeed;
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
 
@@ -46,7 +47,7 @@ export class Player extends Physics.Arcade.Sprite {
         }
 
         if (this.keyA?.isDown) {
-            this.body.velocity.x = -200;
+            this.body.velocity.x = -this.playerSpeed;
             this.scaleX = -1;
             this.setOffset(32, 0);
 
@@ -56,14 +57,14 @@ export class Player extends Physics.Arcade.Sprite {
         }
 
         if (this.keyS?.isDown) {
-            this.body.velocity.y = 200;
+            this.body.velocity.y = this.playerSpeed;
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
             running = true;
         }
 
         if (this.keyD?.isDown) {
-            this.body.velocity.x = 200;
+            this.body.velocity.x = this.playerSpeed;
             this.scaleX = 1;
             this.setOffset(0, 0);
 
@@ -73,7 +74,7 @@ export class Player extends Physics.Arcade.Sprite {
             running = true;
         }
 
-        this.body.velocity.limit(200)
+        this.body.velocity.limit(this.playerSpeed)
 
         if (!running) {
             if (this.anims.getName() != "player_idle")

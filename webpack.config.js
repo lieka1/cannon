@@ -1,6 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     entry: "./src/index.ts",
@@ -25,25 +25,31 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
     },
     optimization: {
-      minimize: true,
-      minimizer: [
-        new TerserPlugin({
-          extractComments: false,
-          terserOptions: {
-            output: {
-              comments: false,
-            },
-          },
-        }),
-      ],
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                extractComments: false,
+                terserOptions: {
+                    output: {
+                        comments: false,
+                    },
+                },
+            }),
+        ],
     },
-    plugins: [new HtmlWebpackPlugin({
-      template: './src/asset/index.html',
-      title: 'Loose cannon',
-      filename: 'index.html',
-    })],
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/asset/index.html",
+            title: "Loose cannon",
+            filename: "index.html",
+        }),
+    ],
     devServer: {
         port: 5000,
         hot: true,
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()],
     },
 };
