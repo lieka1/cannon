@@ -2,11 +2,25 @@ import { CannonBase } from "../actor/base/cannon";
 import Enemy from "../actor/base/Enemy";
 import { BigDemon } from "../actor/BigDemon";
 import { EnemyPortal } from "../actor/Portal";
+import { GateManager } from "./GateManager";
+
+interface EnemyLevel {
+    power: number; // total power of enemy
+    count: number; // count of enemy
+}
+
+const LevelEnemyDefine: EnemyLevel[] = [
+    {
+        power: 10,
+        count: 300,
+    },
+];
 
 export class EnemyManager {
     wave: number = 0;
-    sended: boolean = false; // if this wave enemy sended
+    remain: EnemyLevel = LevelEnemyDefine[0]; // if this wave enemy sended
     map: Phaser.Tilemaps.TilemapLayer;
+    gate: GateManager;
 
     mapSize: { x: number; y: number };
     scene: Phaser.Scene;
@@ -16,10 +30,15 @@ export class EnemyManager {
     portalLeft: EnemyPortal;
     portalRight: EnemyPortal;
 
-    constructor(scene: Phaser.Scene, map: Phaser.Tilemaps.TilemapLayer) {
+    constructor(
+        scene: Phaser.Scene,
+        map: Phaser.Tilemaps.TilemapLayer,
+        gates: GateManager
+    ) {
         this.scene = scene;
         this.mapSize = { x: map.width, y: map.height };
         this.map = map;
+        this.gate = gates;
     }
 
     initProtal() {
@@ -59,24 +78,74 @@ export class EnemyManager {
         return this.data;
     }
 
-    createEnemy() {
-        // send some in green portal
-        for (var i = 0; i < 10; i++) {
-            this.addNew(new BigDemon(this.scene, this.map, this.portalLeft));
-        }
+    randPortal() {
+        let r = Date.now() % 2;
 
-        // send some in purple portal
-        // for (var i = 0; i < 10; i++) {}
+        switch (r) {
+            case 0:
+                return this.portalLeft;
+            case 1:
+                return this.portalRight;
+        }
+    }
+
+    createEnemy() {
+        if (this.remain.count > 0) {
+            let tarGate = this.gate.getRandGate();
+
+            let newItem = new BigDemon(
+                this.scene,
+                this.map,
+                this.randPortal(),
+                tarGate[0],
+                tarGate[1]
+            );
+
+            this.addNew(newItem);
+
+            this.scene.physics.moveTo(
+                newItem,
+                tarGate[1].x,
+                tarGate[1].y,
+                newItem.speed
+            );
+
+            this.remain.count -= 1;
+        }
     }
 
     enemyDead() {}
 
     update() {
-        if (!this.sended) {
-            this.createEnemy();
-            this.sended = true;
-        }
+        this.createEnemy();
 
-        this.scene.physics.collide(new Array(this.data) as any);
+        this.data.forEach((e: Enemy) => {
+            if (e.arrived) {
+                return;
+            }
+
+            if (!e.colliding) {
+                this.scene.physics.moveTo(
+                    e,
+                    e.targetPos.x,
+                    e.targetPos.y,
+                    e.speed
+                );
+            } else {
+                e.colliding = false;
+            }
+        });
+
+        this.scene.physics.collide(
+            this.data,
+            undefined,
+            (e1: Enemy, e2: Enemy) => {
+                if (e1.arrived || e2.arrived) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
     }
 }

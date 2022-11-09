@@ -16,7 +16,7 @@ export interface CannonDefine {
     onShot: (enemy: Actor) => void; // on shot hit
 }
 
-export class CannonBase extends Physics.Arcade.Sprite {
+export class CannonBase extends Physics.Arcade.Image {
     protected define: CannonDefine;
     protected level: number; // cannon level
 

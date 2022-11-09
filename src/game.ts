@@ -93,7 +93,7 @@ export default class Main extends Phaser.Scene {
         // load physics
         this.wallsLayer.setCollisionByProperty({ col: true });
 
-        this.wallsLayer.renderDebug(this.add.graphics());
+        // this.wallsLayer.renderDebug(this.add.graphics());
 
         this.physics.world.setBounds(
             0,
@@ -106,7 +106,7 @@ export default class Main extends Phaser.Scene {
         map.createLayer("tree", ground_tile);
 
         // init door
-        this.Gates = new GateManager(map, castle_tile);
+        this.Gates = new GateManager(this, map);
     }
 
     ////////////////////////////////////////////
@@ -171,7 +171,7 @@ export default class Main extends Phaser.Scene {
 
     private initEnemy() {
         // init enemys
-        this.Enemys = new EnemyManager(this, this.wallsLayer);
+        this.Enemys = new EnemyManager(this, this.wallsLayer, this.Gates);
 
         // create portal
         this.Enemys.initProtal();

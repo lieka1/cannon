@@ -1,4 +1,5 @@
 import { Game } from "phaser";
+import { Ui } from "./ui";
 import Main from "./game";
 
 interface Window {
@@ -24,7 +25,7 @@ window.onload = () => {
                 debug: true,
             },
         },
-        scene: [Main],
+        scene: [Main, Ui],
     });
 };
 

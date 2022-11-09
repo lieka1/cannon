@@ -7,19 +7,18 @@ const BigDemonDefine: EnemyDefine = {
     idle_anim: "big_demon_idle",
     run_anim: "big_demon_run",
     size: { width: 10, height: 30 },
+    speedRange: { base: 100, range: 30 },
 };
 
 export class BigDemon extends Enemy {
-
     constructor(
         scene: Phaser.Scene,
         map: Phaser.Tilemaps.TilemapLayer,
-        portal: EnemyPortal
+        portal: EnemyPortal,
+        target: Phaser.GameObjects.Rectangle,
+        targetPos: {x: number, y: number}
     ) {
-        super(scene, portal.x, portal.y, BigDemonDefine);
+        super(scene, map, portal.x, portal.y, BigDemonDefine, target, targetPos);
 
-        this.body.velocity.set(100, 100);
-    
-        scene.physics.add.collider(this, map);
     }
 }
