@@ -25,7 +25,7 @@ export class EnemyManager {
     mapSize: { x: number; y: number };
     scene: Phaser.Scene;
     data: Array<Enemy | undefined> = [];
-    emptyPlace: number[] = [];
+    emptyPlace: number[] = []; // todo: add killed enemy to empty place
 
     portalLeft: EnemyPortal;
     portalRight: EnemyPortal;
@@ -98,15 +98,17 @@ export class EnemyManager {
                 this.map,
                 this.randPortal(),
                 tarGate[0],
-                tarGate[1]
+                tarGate[1],
+                tarGate[2],
+                tarGate[3],
             );
 
             this.addNew(newItem);
 
             this.scene.physics.moveTo(
                 newItem,
-                tarGate[1].x,
-                tarGate[1].y,
+                tarGate[2].x,
+                tarGate[2].y,
                 newItem.speed
             );
 
@@ -114,25 +116,37 @@ export class EnemyManager {
         }
     }
 
-    enemyDead() {}
-
     update() {
         this.createEnemy();
 
         this.data.forEach((e: Enemy) => {
+            if (!e) return; 
+
             if (e.arrived) {
                 return;
             }
-
-            if (!e.colliding) {
-                this.scene.physics.moveTo(
-                    e,
-                    e.targetPos.x,
-                    e.targetPos.y,
-                    e.speed
-                );
+            if (e.frontArrived) {
+                if (!e.colliding) {
+                    this.scene.physics.moveTo(
+                        e,
+                        e.targetPos.x,
+                        e.targetPos.y,
+                        e.speed
+                    );
+                } else {
+                    e.colliding = false;
+                }
             } else {
-                e.colliding = false;
+                if (!e.colliding) {
+                    this.scene.physics.moveTo(
+                        e,
+                        e.targetPos1.x,
+                        e.targetPos1.y,
+                        e.speed
+                    );
+                } else {
+                    e.colliding = false;
+                } 
             }
         });
 

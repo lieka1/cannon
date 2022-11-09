@@ -21,11 +21,17 @@ export default class Enemy extends Physics.Arcade.Sprite {
     protected hp = 100;
     speed: number;
     id: number;
-    target: Phaser.GameObjects.Rectangle;
-    targetPos: { x: number; y: number };
+
+    target: Phaser.GameObjects.Rectangle; // target gate
+    targetPos: { x: number; y: number }; // target gate pos
+
+    target1: Phaser.GameObjects.Rectangle; // target gate
+    targetPos1: { x: number; y: number }; // target gate pos
+    frontArrived: boolean = false; // arrive the front 
+
     colliding: boolean = false;
     arrived: boolean = false; // object get to the target
-    collider: Physics.Arcade.Collider;
+    colliders: Physics.Arcade.Collider[] = [];
 
     constructor(
         scene: Phaser.Scene,
@@ -34,63 +40,72 @@ export default class Enemy extends Physics.Arcade.Sprite {
         y: number,
         define: EnemyDefine,
         target: Phaser.GameObjects.Rectangle,
-        targetPos: { x: number; y: number }
+        targetPos: { x: number; y: number },
+        target1: Phaser.GameObjects.Rectangle,
+        targetPos1: { x: number; y: number }
     ) {
         //@ts-ignore
         super(scene, x, y);
 
+        // add item
         scene.add.existing(this);
         scene.physics.add.existing(this);
-
         this.getBody().setCollideWorldBounds(true);
 
+
+
+        // init feild
         this.define = define;
-
-        this.anims.play(define.run_anim);
-
-        this.body.setSize(define.size.width, define.size.height);
-
         this.target = target;
-
+        this.targetPos = targetPos;
+        this.target1 = target1;
+        this.targetPos1 = targetPos1;
         this.speed =
             define.speedRange.base + define.speedRange.range * Math.random();
 
-        this.targetPos = targetPos;
-        this.body.bounce.limit(0);
+        // animation
+        this.anims.play(define.run_anim);
 
-        this.collider = scene.physics.add.collider(this, map, (e: Enemy, _) => {
-            if (this.arrived) {
-                e.scene.physics.world.removeCollider(e.collider);
-                e.body.velocity.limit(0);
+        // init physics
+        this.body.setSize(define.size.width / 4, define.size.height/ 4);
+        this.setBounce(0);
 
-                return;
-            }
+        this.colliders.push(
+            scene.physics.add.overlap(this, target, (e: Enemy, _: any) => {
+                e.colliders.forEach((e) => {
+                    this.scene.physics.world.removeCollider(e);
+                });
 
-            // add speed to item if item is slowing down
-            if (e.y - e.target.y < e.speed + 10) {
-                this.arrived = true;
+                delete e.colliders;
 
-                e.body.immovable = true;
+                e.arrived = true;
+                e.play(e.define.idle_anim);
+                e.setImmovable();
+                e.setVelocity(0);
+            })
+        );
 
-                this.scene.physics.moveTo(
-                    e,
-                    e.targetPos.x,
-                    e.targetPos.y,
-                    e.speed
-                );
+        this.colliders.push(
+            scene.physics.add.overlap(this, target1, (e: Enemy, _: any) => {
+                this.frontArrived = true;
+            })
+        );
 
-                return;
-            }
 
-            if (e.body.velocity.x == 0) {
-                e.body.velocity.y = e.speed;
-            }
-            if (e.body.velocity.y == 0) {
-                e.body.velocity.x = e.speed;
-            }
+        // this.colliders.push(
+        //     scene.physics.add.collider(this, map, (e: Enemy, _) => {
+        //         if (e.body.velocity.x == 0) {
+        //             e.body.velocity.y =
+        //                 (e.body.velocity.y > 0 ? 1 : -1) * e.speed;
+        //         }
+        //         if (e.body.velocity.y == 0) {
+        //             e.body.velocity.x =
+        //                 (e.body.velocity.x > 0 ? 1 : -1) * e.speed;
+        //         }
 
-            e.colliding = true;
-        });
+        //         e.colliding = true;
+        //     })
+        // );
     }
 
     public getDamage(value?: number): void {

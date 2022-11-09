@@ -16,9 +16,20 @@ export class BigDemon extends Enemy {
         map: Phaser.Tilemaps.TilemapLayer,
         portal: EnemyPortal,
         target: Phaser.GameObjects.Rectangle,
-        targetPos: {x: number, y: number}
+        targetPos: { x: number; y: number },
+        target1: Phaser.GameObjects.Rectangle,
+        targetPos1: { x: number; y: number }
     ) {
-        super(scene, map, portal.x, portal.y, BigDemonDefine, target, targetPos);
-
+        super(
+            scene,
+            map,
+            portal.x,
+            portal.y,
+            BigDemonDefine,
+            target,
+            targetPos,
+            target1,
+            targetPos1
+        );
     }
 }

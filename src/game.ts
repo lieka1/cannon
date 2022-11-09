@@ -29,6 +29,13 @@ import portal_green_anim from "./asset/map/portal_green_anim.json";
 import portal_purple from "./asset/map/portal_purple.png";
 //@ts-ignore
 import portal_purple_anim from "./asset/map/portal_purple_anim.json";
+////        load cannon
+//@ts-ignore
+import cannon_base_img from "./asset/cannon/cannon_base.png";
+//@ts-ignore
+import cannon_base_atlas from "./asset/cannon/cannon_base_atlas.json";
+//@ts-ignore
+import cannon_base_anim from "./asset/cannon/cannon_base_anim.json";
 
 import { Player } from "./player";
 import Enemy from "./actor/base/Enemy";
@@ -47,14 +54,12 @@ export default class Main extends Phaser.Scene {
 
     // managers
     bullets: BulletManager = new BulletManager();
-    Cannons: CannonManager = new CannonManager();
+    Cannons: CannonManager = new CannonManager(this);
     Enemys: EnemyManager;
     Gates: GateManager;
 
     constructor() {
         super("main");
-
-        this.children;
     }
 
     ////////////////////////////////////////////
@@ -93,7 +98,7 @@ export default class Main extends Phaser.Scene {
         // load physics
         this.wallsLayer.setCollisionByProperty({ col: true });
 
-        // this.wallsLayer.renderDebug(this.add.graphics());
+        this.wallsLayer.renderDebug(this.add.graphics());
 
         this.physics.world.setBounds(
             0,
@@ -120,9 +125,9 @@ export default class Main extends Phaser.Scene {
     }
 
     createPlayer() {
-        this.player = new Player(this, 100, 100);
+        this.player = new Player(this, this.wallsLayer.width);
 
-        // this.physics.add.collider(this.player, this.wallsLayer);
+        this.physics.add.collider(this.player, this.wallsLayer);
     }
 
     ////////////////////////////////////////////
@@ -179,6 +184,17 @@ export default class Main extends Phaser.Scene {
 
     ////////////////////////////////////////////
     ///
+    ///             Cannon
+    ///
+    ////////////////////////////////////////////
+
+    loadCannon() {
+        this.load.atlas("cannon_base", cannon_base_img, cannon_base_atlas);
+        this.load.animation("canon_base_anim", cannon_base_anim);
+    }
+
+    ////////////////////////////////////////////
+    ///
     ///             Scene
     ///
     ////////////////////////////////////////////
@@ -187,6 +203,7 @@ export default class Main extends Phaser.Scene {
         this.loadMap();
         this.loadPlayer();
         this.loadEnemy();
+        this.loadCannon();
     }
 
     create() {
@@ -204,5 +221,8 @@ export default class Main extends Phaser.Scene {
     update() {
         this.player.update();
         this.Enemys.update();
+        this.Cannons.update();
     }
+
+    
 }
