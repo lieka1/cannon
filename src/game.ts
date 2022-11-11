@@ -101,7 +101,7 @@ export default class Main extends Phaser.Scene {
         // load physics
         this.wallsLayer.setCollisionByProperty({ col: true });
 
-        this.wallsLayer.renderDebug(this.add.graphics());
+        // this.wallsLayer.renderDebug(this.add.graphics());
 
         this.physics.world.setBounds(
             0,

@@ -84,6 +84,8 @@ export class CannonBase extends Physics.Arcade.Sprite {
         ) {
             m.addNew(this.buildBullet(this.target));
 
+            this.anims.play(this.define.shotAnim,);
+
             this.lastShot = time;
         }
     }

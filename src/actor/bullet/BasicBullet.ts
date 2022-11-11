@@ -9,21 +9,25 @@ const BasicBulletDefine: BulletDefine = {
 };
 
 export class BasicBullet extends Bullet {
-
     constructor(
         scene: Phaser.Scene,
         target: Enemy,
         parent: BasicCannon,
         x: number,
-        y: number,
+        y: number
     ) {
         super(scene, target, parent, x, y, BasicBulletDefine);
 
-        scene.physics.moveTo(this, target.x, target.y, BasicBulletDefine.mov_speed);
+        scene.physics.moveTo(
+            this,
+            target.x,
+            target.y,
+            BasicBulletDefine.mov_speed
+        );
     }
 
     getParent(): BasicCannon {
-        return this.parent;
+        return this.fromCannon;
     }
 
     hit(enemy: Enemy): void {
@@ -31,6 +35,10 @@ export class BasicBullet extends Bullet {
     }
 
     finished(): boolean {
-        return this.x == this.enemy.targetPos.x && this.y == this.enemy.targetPos.y;
+        if (this.y > 1000) {
+            console.log(this);
+        }
+
+        return this.y > this.enemy.targetPos.y;
     }
 }

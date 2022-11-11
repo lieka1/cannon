@@ -21,8 +21,8 @@ export interface BulletTarget {
 export class Bullet extends Physics.Arcade.Image {
     define: BulletDefine;
     enemy: BulletTarget;
-    id: number;
-    parent: CannonBase;
+    bId: number;
+    fromCannon: CannonBase;
 
     constructor(
         scene: Phaser.Scene,
@@ -34,9 +34,11 @@ export class Bullet extends Physics.Arcade.Image {
     ) {
         super(scene, x, y, define.texture);
 
+        scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.parent = parent;
+        this.fromCannon = parent;
+
         this.enemy = {
             target: enemy,
             targetPos: { x: enemy.x, y: enemy.y },
@@ -44,7 +46,7 @@ export class Bullet extends Physics.Arcade.Image {
     }
 
     setId(id: number) {
-        this.id = id;
+        this.bId = id;
     }
 
     // this function will be called when bullet hit

@@ -22,7 +22,7 @@ export default class Enemy extends Physics.Arcade.Sprite {
     hp: number;
     speed: number;
     id: number;
-    
+
     target: Phaser.GameObjects.Rectangle; // target gate
     targetPos: { x: number; y: number }; // target gate pos
 
@@ -33,6 +33,8 @@ export default class Enemy extends Physics.Arcade.Sprite {
     colliding: boolean = false;
     arrived: boolean = false; // object get to the target
     colliders: Physics.Arcade.Collider[] = [];
+
+    moveingCollider: Physics.Arcade.Collider[] = [];
 
     constructor(
         scene: Phaser.Scene,
@@ -70,15 +72,15 @@ export default class Enemy extends Physics.Arcade.Sprite {
         this.body.setSize(define.size.width / 4, define.size.height / 4);
         this.setBounce(0);
         // init hit body
-        this
+        this;
 
-        this.colliders.push(
+        this.moveingCollider.push(
             scene.physics.add.overlap(this, target, (e: Enemy, _: any) => {
-                e.colliders.forEach((e) => {
+                e.moveingCollider.forEach((e) => {
                     this.scene.physics.world.removeCollider(e);
                 });
 
-                delete e.colliders;
+                delete e.moveingCollider;
 
                 e.arrived = true;
                 e.play(e.define.idle_anim);
@@ -87,26 +89,11 @@ export default class Enemy extends Physics.Arcade.Sprite {
             })
         );
 
-        this.colliders.push(
+        this.moveingCollider.push(
             scene.physics.add.overlap(this, target1, (e: Enemy, _: any) => {
-                this.frontArrived = true;
+                e.frontArrived = true;
             })
         );
-
-        // this.colliders.push(
-        //     scene.physics.add.collider(this, map, (e: Enemy, _) => {
-        //         if (e.body.velocity.x == 0) {
-        //             e.body.velocity.y =
-        //                 (e.body.velocity.y > 0 ? 1 : -1) * e.speed;
-        //         }
-        //         if (e.body.velocity.y == 0) {
-        //             e.body.velocity.x =
-        //                 (e.body.velocity.x > 0 ? 1 : -1) * e.speed;
-        //         }
-
-        //         e.colliding = true;
-        //     })
-        // );
     }
 
     public getDamage(value?: number): void {
@@ -187,7 +174,14 @@ export default class Enemy extends Physics.Arcade.Sprite {
 
     addCollider(enemys: EnemyManager) {
         enemys.data.forEach((e) => {
-            this.colliders.push(enemys.scene.physics.add.collider(this, e));
+            if (e)
+                this.colliders.push(enemys.scene.physics.add.collider(this, e));
+        });
+    }
+
+    removeCollider(scene: Phaser.Scene) {
+        this.colliders.forEach((e) => {
+            scene.physics.world.removeCollider(e);
         });
     }
 }

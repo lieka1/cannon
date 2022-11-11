@@ -61,7 +61,7 @@ export class EnemyManager {
 
     addNew(b: Enemy) {
         b.addCollider(this);
-        
+
         if (this.emptyPlace.length < 1) {
             // add new item
             this.data.push(b);
@@ -116,6 +116,10 @@ export class EnemyManager {
 
             this.remain.count -= 1;
         }
+
+        if (this.emptyPlace.length > 280) {
+            this.remain.count += 280;
+        }
     }
 
     removeDead(id: number) {
@@ -133,9 +137,12 @@ export class EnemyManager {
 
             // check health
             if (e.checkDead()) {
-                console.log("dead");
+                e.removeCollider(this.scene);
                 this.removeDead(e.id);
             }
         });
+
+
+        // console.log(this.scene.physics.world.colliders.len)
     }
 }
