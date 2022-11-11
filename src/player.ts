@@ -1,6 +1,6 @@
 import { Input, Physics, Scene } from "phaser";
 import { CannonBase } from "./actor/base/cannon";
-import { BasicCannon } from "./actor/BasicCannon";
+import { BasicCannon } from "./actor/cannon/BasicCannon";
 import Main from "./game";
 
 enum PlayerFacing {

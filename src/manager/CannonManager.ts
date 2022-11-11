@@ -1,9 +1,20 @@
 import { CannonBase } from "../actor/base/cannon";
+import Enemy from "../actor/base/Enemy";
+import Main from "../game";
+import { EnemyManager } from "./EnemyManager";
+
+const DistanceSquared = (x1: number, y1: number, x2: number, y2: number) => {
+    var dx = x1 - x2;
+    var dy = y1 - y2;
+
+    return dx * dx + dy * dy;
+};
 
 export class CannonManager {
     data: Array<CannonBase> = [];
     emptyPlace: number[] = [];
     scene: Phaser.Scene;
+    lastUpdate: number;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -42,9 +53,48 @@ export class CannonManager {
         return this.data;
     }
 
-    update() {
+    closest(source: any, targets: Enemy[]) {
+        var min = Number.MAX_VALUE;
+        var closest = null;
+        var x = source.x;
+        var y = source.y;
+        var len = targets.length;
+
+        for (var i = 0; i < len; i++) {
+            var target = targets[i];
+            if (!target) continue;
+
+            var body = target.body;
+
+            var distance = DistanceSquared(x, y, body.center.x, body.center.y);
+
+            if (distance < min) {
+                closest = target;
+                min = distance;
+            }
+        }
+
+        return closest;
+    }
+
+    update(time: number, _: number, enemys: EnemyManager) {
+        let s = this.scene as Main;
+
         this.data.forEach((e) => {
-            e.shot(1 as any);
+            // find closest enemy
+            if (!e.hasTarget()) {
+                let tar = this.closest(e, enemys.data) as Enemy;
+
+                if (!tar) {
+                    return;
+                }
+
+                e.setTarget(tar, time);
+            } else {
+                e.shot(time, s.bullets);
+            }
         });
+
+        this.lastUpdate = time;
     }
 }

@@ -32,6 +32,10 @@ export class Ui extends Phaser.Scene {
 
         this.frames = [];
 
+        if (this.score) {
+            this.score.destroy();
+        }
+
         this.score = new Text(this, 20, 20, "Fps: 0, objs: 0");
         const totalHeight = this.game.scale.height;
         const itemSizeHalf = this.bottomHeight / 2;

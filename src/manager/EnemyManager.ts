@@ -1,7 +1,7 @@
 import { CannonBase } from "../actor/base/cannon";
 import Enemy from "../actor/base/Enemy";
-import { BigDemon } from "../actor/BigDemon";
-import { EnemyPortal } from "../actor/Portal";
+import { BigDemon } from "../actor/enemy/BigDemon";
+import { EnemyPortal } from "../actor/enemy/Portal";
 import { GateManager } from "./GateManager";
 
 interface EnemyLevel {
@@ -60,6 +60,8 @@ export class EnemyManager {
     }
 
     addNew(b: Enemy) {
+        b.addCollider(this);
+        
         if (this.emptyPlace.length < 1) {
             // add new item
             this.data.push(b);
@@ -100,7 +102,7 @@ export class EnemyManager {
                 tarGate[0],
                 tarGate[1],
                 tarGate[2],
-                tarGate[3],
+                tarGate[3]
             );
 
             this.addNew(newItem);
@@ -116,50 +118,24 @@ export class EnemyManager {
         }
     }
 
+    removeDead(id: number) {
+        this.data[id] = undefined;
+        this.emptyPlace.push(id);
+    }
+
     update() {
         this.createEnemy();
-
         this.data.forEach((e: Enemy) => {
-            if (!e) return; 
+            if (!e) return;
 
-            if (e.arrived) {
-                return;
-            }
-            if (e.frontArrived) {
-                if (!e.colliding) {
-                    this.scene.physics.moveTo(
-                        e,
-                        e.targetPos.x,
-                        e.targetPos.y,
-                        e.speed
-                    );
-                } else {
-                    e.colliding = false;
-                }
-            } else {
-                if (!e.colliding) {
-                    this.scene.physics.moveTo(
-                        e,
-                        e.targetPos1.x,
-                        e.targetPos1.y,
-                        e.speed
-                    );
-                } else {
-                    e.colliding = false;
-                } 
+            // movment
+            e.checkArrive();
+
+            // check health
+            if (e.checkDead()) {
+                console.log("dead");
+                this.removeDead(e.id);
             }
         });
-
-        this.scene.physics.collide(
-            this.data,
-            undefined,
-            (e1: Enemy, e2: Enemy) => {
-                if (e1.arrived || e2.arrived) {
-                    return false;
-                }
-
-                return true;
-            }
-        );
     }
 }

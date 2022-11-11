@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import Enemy, { EnemyDefine } from "./base/Enemy";
+import Enemy, { EnemyDefine } from "../base/Enemy";
 import { EnemyPortal } from "./Portal";
 
 const BigDemonDefine: EnemyDefine = {
@@ -8,6 +8,7 @@ const BigDemonDefine: EnemyDefine = {
     run_anim: "big_demon_run",
     size: { width: 10, height: 30 },
     speedRange: { base: 100, range: 30 },
+    health: 1,
 };
 
 export class BigDemon extends Enemy {

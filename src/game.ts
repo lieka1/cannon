@@ -36,6 +36,9 @@ import cannon_base_img from "./asset/cannon/cannon_base.png";
 import cannon_base_atlas from "./asset/cannon/cannon_base_atlas.json";
 //@ts-ignore
 import cannon_base_anim from "./asset/cannon/cannon_base_anim.json";
+//@ts-ignore
+////        load bullet
+import basic_bullet from './asset/bullet/basic_bullet.png';
 
 import { Player } from "./player";
 import Enemy from "./actor/base/Enemy";
@@ -44,7 +47,7 @@ import { Actor } from "./actor/base/actor";
 import { BulletManager } from "./manager/BulletManager";
 import { CannonManager } from "./manager/CannonManager";
 import { EnemyManager } from "./manager/EnemyManager";
-import { EnemyPortal } from "./actor/Portal";
+import { EnemyPortal } from "./actor/enemy/Portal";
 import { GateManager } from "./manager/GateManager";
 
 export default class Main extends Phaser.Scene {
@@ -53,7 +56,7 @@ export default class Main extends Phaser.Scene {
     player: Player;
 
     // managers
-    bullets: BulletManager = new BulletManager();
+    bullets: BulletManager = new BulletManager(this);
     Cannons: CannonManager = new CannonManager(this);
     Enemys: EnemyManager;
     Gates: GateManager;
@@ -189,6 +192,8 @@ export default class Main extends Phaser.Scene {
     ////////////////////////////////////////////
 
     loadCannon() {
+        // basic bullet
+        this.load.image("basic_bullet", basic_bullet);
         this.load.atlas("cannon_base", cannon_base_img, cannon_base_atlas);
         this.load.animation("canon_base_anim", cannon_base_anim);
     }
@@ -218,11 +223,10 @@ export default class Main extends Phaser.Scene {
         this.initEnemy();
     }
 
-    update() {
+    update(time: number, delta: number) {
         this.player.update();
+        this.Cannons.update(time, delta, this.Enemys);
+        this.bullets.update(this.Enemys);
         this.Enemys.update();
-        this.Cannons.update();
     }
-
-    
 }

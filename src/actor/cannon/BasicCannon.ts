@@ -1,5 +1,8 @@
 // basic cannon will distory itself after 100 shots
-import { CannonBase, CannonDefine } from "./base/cannon";
+import { Bullet } from "../base/bullet";
+import { CannonBase, CannonDefine } from "../base/cannon";
+import Enemy from "../base/Enemy";
+import { BasicBullet } from "../bullet/BasicBullet";
 
 const BasicCannonDefine: CannonDefine = {
     levelDefine: [{ damage: 1, attackSpeed: 500, attackRange: 500 }],
@@ -12,5 +15,9 @@ const BasicCannonDefine: CannonDefine = {
 export class BasicCannon extends CannonBase {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, BasicCannonDefine);
+    }
+
+    buildBullet(enemy: Enemy): Bullet {
+        return new BasicBullet(this.scene, enemy, this, this.x, this.y);
     }
 }

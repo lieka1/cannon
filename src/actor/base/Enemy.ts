@@ -1,4 +1,5 @@
 import { Physics } from "phaser";
+import { EnemyManager } from "../../manager/EnemyManager";
 import { Actor } from "./actor";
 
 export enum EnemyArmor {
@@ -12,22 +13,22 @@ export interface EnemyDefine {
     size: { width: number; height: number };
     speedRange: { base: number; range: number }; // movement speed range
     scale?: number;
-    health?: number; // enemy health, default 100
+    health: number; // enemy health, default 100
     armor?: EnemyArmor; // enemy armor, default normal
 }
 
 export default class Enemy extends Physics.Arcade.Sprite {
     define: EnemyDefine;
-    protected hp = 100;
+    hp: number;
     speed: number;
     id: number;
-
+    
     target: Phaser.GameObjects.Rectangle; // target gate
     targetPos: { x: number; y: number }; // target gate pos
 
     target1: Phaser.GameObjects.Rectangle; // target gate
     targetPos1: { x: number; y: number }; // target gate pos
-    frontArrived: boolean = false; // arrive the front 
+    frontArrived: boolean = false; // arrive the front
 
     colliding: boolean = false;
     arrived: boolean = false; // object get to the target
@@ -52,8 +53,6 @@ export default class Enemy extends Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.getBody().setCollideWorldBounds(true);
 
-
-
         // init feild
         this.define = define;
         this.target = target;
@@ -62,13 +61,16 @@ export default class Enemy extends Physics.Arcade.Sprite {
         this.targetPos1 = targetPos1;
         this.speed =
             define.speedRange.base + define.speedRange.range * Math.random();
+        this.hp = define.health;
 
         // animation
         this.anims.play(define.run_anim);
 
         // init physics
-        this.body.setSize(define.size.width / 4, define.size.height/ 4);
+        this.body.setSize(define.size.width / 4, define.size.height / 4);
         this.setBounce(0);
+        // init hit body
+        this
 
         this.colliders.push(
             scene.physics.add.overlap(this, target, (e: Enemy, _: any) => {
@@ -90,7 +92,6 @@ export default class Enemy extends Physics.Arcade.Sprite {
                 this.frontArrived = true;
             })
         );
-
 
         // this.colliders.push(
         //     scene.physics.add.collider(this, map, (e: Enemy, _) => {
@@ -142,7 +143,51 @@ export default class Enemy extends Physics.Arcade.Sprite {
         return this.body as Physics.Arcade.Body;
     }
 
+    checkArrive() {
+        if (this.arrived) {
+            return;
+        }
+        if (this.frontArrived) {
+            if (!this.colliding) {
+                this.scene.physics.moveTo(
+                    this,
+                    this.targetPos.x,
+                    this.targetPos.y,
+                    this.speed
+                );
+            } else {
+                this.colliding = false;
+            }
+        } else {
+            if (!this.colliding) {
+                this.scene.physics.moveTo(
+                    this,
+                    this.targetPos1.x,
+                    this.targetPos1.y,
+                    this.speed
+                );
+            } else {
+                this.colliding = false;
+            }
+        }
+    }
+
+    checkDead(): boolean {
+        if (this.hp <= 0) {
+            this.destroy();
+            return true;
+        }
+
+        return false;
+    }
+
     setId(id: number) {
         this.id = id;
+    }
+
+    addCollider(enemys: EnemyManager) {
+        enemys.data.forEach((e) => {
+            this.colliders.push(enemys.scene.physics.add.collider(this, e));
+        });
     }
 }
