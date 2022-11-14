@@ -62,7 +62,7 @@ export class EnemyManager {
     addNew(b: Enemy) {
         b.addCollider(this);
 
-        if (this.emptyPlace.length < 1) {
+        if (this.emptyPlace.length === 0) {
             // add new item
             this.data.push(b);
             b.setId(this.data.length - 1);
@@ -117,7 +117,7 @@ export class EnemyManager {
             this.remain.count -= 1;
         }
 
-        if (this.emptyPlace.length > 280) {
+        if (this.emptyPlace.length > 280 && this.remain.count < 20) {
             this.remain.count += 280;
         }
     }

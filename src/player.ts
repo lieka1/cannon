@@ -2,6 +2,7 @@ import { Input, Physics, Scene } from "phaser";
 import { CannonBase } from "./actor/base/cannon";
 import { BasicCannon } from "./actor/cannon/BasicCannon";
 import Main from "./game";
+import { CastleScene } from "./manager/MapManager";
 
 enum PlayerFacing {
     top,
@@ -23,8 +24,19 @@ export class Player extends Physics.Arcade.Sprite {
     private playerSpeed = 200;
     facing: PlayerFacing = PlayerFacing.right;
 
-    constructor(scene: Scene, mapwidth: number) {
-        super(scene, mapwidth / 2, 300, "king");
+
+    bodySize = {
+        x: 15,
+        y: 19,
+    };
+
+    constructor(scene: Scene, map: Phaser.Tilemaps.Tilemap) {
+        // get player spawn position
+        let tarPos = map
+            .getObjectLayer("player")
+            .objects.find((e) => e.name === "player_spawn");
+
+        super(scene, tarPos.x, tarPos.y, "king");
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
@@ -41,7 +53,7 @@ export class Player extends Physics.Arcade.Sprite {
         });
 
         // PHYSICS
-        this.body.setSize(32, 32);
+        this.body.setSize(this.bodySize.x, this.bodySize.y);
 
         this.on("destroy", () => {
             this.keySpace.removeAllListeners();
@@ -89,12 +101,18 @@ export class Player extends Physics.Arcade.Sprite {
     update(): void {
         let s = this.scene as Main;
 
+        // check wall collision
+        s.Map.checkMovement(this);
+
+        // calc velocity
         (this.body as Physics.Arcade.Body).setVelocity(0);
 
         let running = false;
 
         if (this.keyW?.isDown) {
             this.body.velocity.y = -this.playerSpeed;
+            this.setOffset(this.body.offset.x, 10);
+
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
 
@@ -104,7 +122,7 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.keyA?.isDown) {
             this.body.velocity.x = -this.playerSpeed;
             this.scaleX = -1;
-            this.setOffset(32, 0);
+            this.setOffset(this.bodySize.x + 10, 10);
 
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
@@ -114,6 +132,8 @@ export class Player extends Physics.Arcade.Sprite {
 
         if (this.keyS?.isDown) {
             this.body.velocity.y = this.playerSpeed;
+            this.setOffset(this.body.offset.x, 10);
+
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
 
@@ -123,7 +143,7 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.keyD?.isDown) {
             this.body.velocity.x = this.playerSpeed;
             this.scaleX = 1;
-            this.setOffset(0, 0);
+            this.setOffset(10, 10);
 
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
@@ -186,10 +206,7 @@ export class Player extends Physics.Arcade.Sprite {
 
             s.Cannons.addNew(newCannon);
 
-            s.physics.add.collider(
-                this,
-                s.Cannons.data,
-            );
+            s.physics.add.collider(this, s.Cannons.data);
         }
     }
 

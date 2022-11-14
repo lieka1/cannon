@@ -115,7 +115,7 @@ export class Ui extends Phaser.Scene {
 
             let objCount = 0;
             if (s.Enemys != undefined) {
-                objCount = s.Enemys.data.length;
+                objCount = s.Enemys.data.length - s.Enemys.emptyPlace.length;
             }
 
             this.score.setText(

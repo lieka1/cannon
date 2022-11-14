@@ -6,6 +6,8 @@ import backgroundConf from "./asset/map/background.json";
 import background_groud from "./asset/map/background_ground.png";
 //@ts-ignore
 import background_castle from "./asset/map/background_castle.png";
+//@ts-ignore
+import background_interior from './asset/map/background_interior.png';
 ////        load player
 //@ts-ignore
 import player_img from "./asset/player/king.png";
@@ -49,9 +51,9 @@ import { CannonManager } from "./manager/CannonManager";
 import { EnemyManager } from "./manager/EnemyManager";
 import { EnemyPortal } from "./actor/enemy/Portal";
 import { GateManager } from "./manager/GateManager";
+import { MapManager } from "./manager/MapManager";
 
 export default class Main extends Phaser.Scene {
-    private wallsLayer!: Phaser.Tilemaps.TilemapLayer;
 
     player: Player;
 
@@ -60,6 +62,7 @@ export default class Main extends Phaser.Scene {
     Cannons: CannonManager = new CannonManager(this);
     Enemys: EnemyManager;
     Gates: GateManager;
+    Map: MapManager;
 
     constructor() {
         super("main");
@@ -75,46 +78,15 @@ export default class Main extends Phaser.Scene {
         this.load.tilemapTiledJSON("map", backgroundConf);
         this.load.image("background_ground", background_groud);
         this.load.image("background_castle", background_castle);
+        this.load.image("background_interior",background_interior);
     }
 
     createMap() {
         // load map
-        const map = this.make.tilemap({ key: "map" });
-
-        const ground_tile = map.addTilesetImage(
-            "background_ground",
-            "background_ground"
-        );
-        const castle_tile = map.addTilesetImage(
-            "background_castle",
-            "background_castle"
-        );
-
-        // create map
-        this.wallsLayer = map.createLayer(
-            "background",
-            [ground_tile, castle_tile],
-            0,
-            0
-        );
-
-        // load physics
-        this.wallsLayer.setCollisionByProperty({ col: true });
-
-        // this.wallsLayer.renderDebug(this.add.graphics());
-
-        this.physics.world.setBounds(
-            0,
-            0,
-            this.wallsLayer.width,
-            this.wallsLayer.height
-        );
-
-        // declaration layer
-        map.createLayer("tree", ground_tile);
+        this.Map = new MapManager(this);
 
         // init door
-        this.Gates = new GateManager(this, map);
+        this.Gates = new GateManager(this, this.Map.map);
     }
 
     ////////////////////////////////////////////
@@ -128,9 +100,7 @@ export default class Main extends Phaser.Scene {
     }
 
     createPlayer() {
-        this.player = new Player(this, this.wallsLayer.width);
-
-        this.physics.add.collider(this.player, this.wallsLayer);
+        this.player = new Player(this, this.Map.map);
     }
 
     ////////////////////////////////////////////
@@ -179,7 +149,7 @@ export default class Main extends Phaser.Scene {
 
     private initEnemy() {
         // init enemys
-        this.Enemys = new EnemyManager(this, this.wallsLayer, this.Gates);
+        this.Enemys = new EnemyManager(this, this.Map.groundLayer, this.Gates);
 
         // create portal
         this.Enemys.initProtal();
@@ -225,8 +195,8 @@ export default class Main extends Phaser.Scene {
 
     update(time: number, delta: number) {
         this.player.update();
-        this.Cannons.update(time, delta, this.Enemys);
-        this.bullets.update(this.Enemys);
-        this.Enemys.update();
+        // this.Cannons.update(time, delta, this.Enemys);
+        // this.bullets.update(this.Enemys);
+        // this.Enemys.update();
     }
 }

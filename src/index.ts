@@ -21,9 +21,9 @@ window.onload = () => {
         backgroundColor: "#304858",
         physics: {
             default: "arcade",
-            // arcade: {
-            //     debug: true,
-            // },
+            arcade: {
+                debug: true,
+            },
         },
         scene: [Main, Ui],
     });
