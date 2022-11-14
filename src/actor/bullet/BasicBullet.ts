@@ -35,10 +35,6 @@ export class BasicBullet extends Bullet {
     }
 
     finished(): boolean {
-        if (this.y > 1000) {
-            console.log(this);
-        }
-
         return this.y > this.enemy.targetPos.y;
     }
 }

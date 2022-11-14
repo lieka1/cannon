@@ -108,7 +108,7 @@ export class MapManager {
             tails
         );
 
-        this.showLayer(CastleScene.frist);
+        this.showLayer(CastleScene.topOutside);
 
         // get collision target
         let tar = this.map.getObjectLayer("map_target");

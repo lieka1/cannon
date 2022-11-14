@@ -192,22 +192,23 @@ export class Player extends Physics.Arcade.Sprite {
         }
 
         // place cannon
-        if (this.keySpace.isDown) {
-            let offsetInfo = this.getFacingOffset();
+        // if (this.keySpace.isDown) {
+        //     this.scene.game.events.emit("press_e");
+        //     // let offsetInfo = this.getFacingOffset();
 
-            let offsetX = offsetInfo.offsetX * 32;
-            let offsetY = offsetInfo.offsetY * 48;
+        //     // let offsetX = offsetInfo.offsetX * 32;
+        //     // let offsetY = offsetInfo.offsetY * 48;
 
-            let newCannon = new BasicCannon(
-                this.scene,
-                this.x + offsetX,
-                this.y + offsetY
-            );
+        //     // let newCannon = new BasicCannon(
+        //     //     this.scene,
+        //     //     this.x + offsetX,
+        //     //     this.y + offsetY
+        //     // );
 
-            s.Cannons.addNew(newCannon);
+        //     // s.Cannons.addNew(newCannon);
 
-            s.physics.add.collider(this, s.Cannons.data);
-        }
+        //     // s.physics.add.collider(this, s.Cannons.data);
+        // }
     }
 
     protected checkFlip(): void {

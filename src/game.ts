@@ -7,7 +7,7 @@ import background_groud from "./asset/map/background_ground.png";
 //@ts-ignore
 import background_castle from "./asset/map/background_castle.png";
 //@ts-ignore
-import background_interior from './asset/map/background_interior.png';
+import background_interior from "./asset/map/background_interior.png";
 ////        load player
 //@ts-ignore
 import player_img from "./asset/player/king.png";
@@ -34,13 +34,9 @@ import portal_purple_anim from "./asset/map/portal_purple_anim.json";
 ////        load cannon
 //@ts-ignore
 import cannon_base_img from "./asset/cannon/cannon_base.png";
-//@ts-ignore
-import cannon_base_atlas from "./asset/cannon/cannon_base_atlas.json";
-//@ts-ignore
-import cannon_base_anim from "./asset/cannon/cannon_base_anim.json";
-//@ts-ignore
 ////        load bullet
-import basic_bullet from './asset/bullet/basic_bullet.png';
+//@ts-ignore
+import basic_bullet from "./asset/bullet/basic_bullet.png";
 
 import { Player } from "./player";
 import Enemy from "./actor/base/Enemy";
@@ -54,7 +50,6 @@ import { GateManager } from "./manager/GateManager";
 import { MapManager } from "./manager/MapManager";
 
 export default class Main extends Phaser.Scene {
-
     player: Player;
 
     // managers
@@ -78,7 +73,7 @@ export default class Main extends Phaser.Scene {
         this.load.tilemapTiledJSON("map", backgroundConf);
         this.load.image("background_ground", background_groud);
         this.load.image("background_castle", background_castle);
-        this.load.image("background_interior",background_interior);
+        this.load.image("background_interior", background_interior);
     }
 
     createMap() {
@@ -164,8 +159,7 @@ export default class Main extends Phaser.Scene {
     loadCannon() {
         // basic bullet
         this.load.image("basic_bullet", basic_bullet);
-        this.load.atlas("cannon_base", cannon_base_img, cannon_base_atlas);
-        this.load.animation("canon_base_anim", cannon_base_anim);
+        this.load.image("cannon_base", cannon_base_img);
     }
 
     ////////////////////////////////////////////
@@ -195,8 +189,8 @@ export default class Main extends Phaser.Scene {
 
     update(time: number, delta: number) {
         this.player.update();
-        // this.Cannons.update(time, delta, this.Enemys);
-        // this.bullets.update(this.Enemys);
-        // this.Enemys.update();
+        this.Cannons.update(time, delta, this.Enemys);
+        this.bullets.update(this.Enemys);
+        this.Enemys.update();
     }
 }
