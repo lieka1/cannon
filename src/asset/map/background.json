@@ -1483,9 +1483,31 @@
          "visible":false,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":38,
+         "name":"cannon_mount",
+         "objects":[
+                {
+                 "class":"",
+                 "height":0,
+                 "id":57,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":1152,
+                 "x":16,
+                 "y":928
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":38,
- "nextobjectid":57,
+ "nextlayerid":39,
+ "nextobjectid":58,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",

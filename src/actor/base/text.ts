@@ -1,16 +1,60 @@
-import { GameObjects, Scene } from 'phaser';
+import { GameObjects, Scene } from "phaser";
+
+export interface TextConfig {
+    fontSize?: string;
+    color?: string;
+    stroke?: string;
+    strokeWidth?: number;
+    origin?: [number, number];
+}
+
+const initTextConfig = (c?: TextConfig) => {
+    if (!c) {
+        c = {};
+    }
+
+    if (!c.color) {
+        c.color = "#fff";
+    }
+
+    if (!c.fontSize) {
+        c.fontSize = "calc(100vw / 25)";
+    }
+
+    if (!c.stroke) {
+        c.stroke = "#000";
+    }
+
+    if (!c.strokeWidth) {
+        c.strokeWidth = 4;
+    }
+
+    if (!c.origin) {
+        c.origin = [0, 0];
+    }
+
+    return c;
+};
 
 export class Text extends GameObjects.Text {
-  constructor(scene: Scene, x: number, y: number, text: string) {
-    super(scene, x, y, text, {
-      fontSize: 'calc(100vw / 25)',
-      color: '#fff',
-      stroke: '#000',
-      strokeThickness: 4,
-    });
+    constructor(
+        scene: Scene,
+        x: number,
+        y: number,
+        text: string,
+        config?: TextConfig
+    ) {
+        config = initTextConfig(config);
 
-    this.setOrigin(0, 0);
+        super(scene, x, y, text, {
+            fontSize: config.fontSize,
+            color: config.color,
+            stroke: config.stroke,
+            strokeThickness: config.strokeWidth,
+        });
 
-    scene.add.existing(this);
-  }
+        this.setOrigin(config.origin[0], config.origin[1]);
+
+        scene.add.existing(this);
+    }
 }

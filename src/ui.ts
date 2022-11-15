@@ -1,6 +1,8 @@
 import { Text } from "./actor/base/text";
 import { MenuButton } from "./actor/ui/MenuButton";
+import { MenuTextButton } from "./actor/ui/MenuTextButton";
 import Main from "./game";
+import { ItemManager } from "./manager/ItemManager";
 
 export enum SceneState {
     main = 1 << 0,
@@ -16,8 +18,14 @@ export interface RenderUpdates {
     rerender: () => void;
 }
 
+interface DestroyableItem {
+    destroy: () => void;
+}
+
 export class Ui extends Phaser.Scene {
     updates: RenderUpdates[] = [];
+
+    items: ItemManager = new ItemManager();
 
     // fps feild
     renderFps: Text;
@@ -36,6 +44,9 @@ export class Ui extends Phaser.Scene {
     // configs
     renderConfig: number = SceneState.main;
     lastRenderConfig: number = SceneState.main;
+
+    // menu feilds
+    menus: DestroyableItem[] = [];
 
     constructor() {
         super({ key: "UIScene", active: true });
@@ -113,15 +124,16 @@ export class Ui extends Phaser.Scene {
 
         for (let i = 0; i < this.itemCount; i++) {
             this.mainFrames.push(
-                new MenuButton(
+                new MenuTextButton(
                     this,
                     () => {
-                        console.log("!");
+                        console.log(i);
                     },
                     leftMargin + itemSizeHalf + i * this.bottomHeight,
                     totalHeight - this.bottomHeight,
                     this.bottomHeight,
-                    this.bottomHeight
+                    this.bottomHeight,
+                    "ll"
                 )
             );
         }
@@ -167,8 +179,94 @@ export class Ui extends Phaser.Scene {
     ///
     ////////////////////////////////////////////
 
+    cleanupMenu() {
+        this.menus.forEach((e) => {
+            e.destroy();
+        });
+    }
+
     rerenderMenu() {
-        // this.add.re;
+        this.menus = [];
+
+        const totalHeight = this.game.scale.height;
+        const totalWidth = this.game.scale.width;
+
+        const renderWidth = 200;
+
+        const leftMargin = (this.game.scale.width - renderWidth) / 2;
+
+        const totalItems = 2;
+        const topMargin = (totalHeight - this.bottomHeight * totalItems) / 2;
+
+        this.menus.push(
+            new MenuTextButton(
+                this,
+                () => {
+                    this.navigateMenuToMain();
+                },
+                leftMargin,
+                topMargin,
+                renderWidth,
+                this.bottomHeight,
+                "continue"
+            )
+        );
+
+        this.menus.push(
+            new MenuTextButton(
+                this,
+                () => {
+                    this.toggleShowFps();
+                },
+                leftMargin,
+                topMargin + this.bottomHeight,
+                renderWidth,
+                this.bottomHeight,
+                "toggle fps"
+            )
+        );
+    }
+
+    ////////////////////////////////////////////
+    ///
+    ///             navigation
+    ///
+    ////////////////////////////////////////////
+    navigateMenuToMain() {
+        this.scene.resume("main");
+
+        this.addState(SceneState.main);
+        this.removeState(SceneState.menu);
+    }
+
+    navigateBuildTomain() {
+        this.scene.resume("main");
+
+        this.addState(SceneState.main);
+        this.removeState(SceneState.itemsToBuild);
+    }
+
+    navigateMainToMenu() {
+        this.scene.pause("main");
+
+        this.addState(SceneState.menu);
+        this.removeState(SceneState.main);
+    }
+
+    navigateMainToBuild() {
+        this.scene.pause("main");
+
+        this.addState(SceneState.itemsToBuild);
+
+        this.removeState(SceneState.main);
+    }
+
+    toggleShowFps() {
+        if (this.hasState(SceneState.fps)) {
+            this.removeState(SceneState.fps);
+        } else {
+            this.addState(SceneState.fps);
+        }
     }
 
     ////////////////////////////////////////////
@@ -179,31 +277,24 @@ export class Ui extends Phaser.Scene {
 
     initControl() {
         this.input.keyboard.on("keyup-E", () => {
-            this.scene.pause("main");
-
-            this.addState(SceneState.itemsToBuild);
-
-            this.removeState(SceneState.main);
+            if (this.hasState(SceneState.main)) {
+                this.navigateMainToBuild();
+            }
         });
 
         this.input.keyboard.on("keyup-ESC", () => {
             if (this.hasState(SceneState.main)) {
-                this.scene.pause("main");
-
-                this.addState(SceneState.menu);
-                this.removeState(SceneState.main);
+                this.navigateMainToMenu();
             } else if (this.hasState(SceneState.itemsToBuild)) {
-                this.scene.resume("main");
-
-                this.addState(SceneState.main);
-                this.removeState(SceneState.itemsToBuild);
+                this.navigateBuildTomain();
             } else if (this.hasState(SceneState.menu)) {
-                this.scene.resume("main");
-
-                this.addState(SceneState.main);
-                this.removeState(SceneState.menu);
+                this.navigateMenuToMain();
             }
         });
+
+        // this.input.on("pointerup", (pointer: any, gameObject: any) => {
+        //     console.log(gameObject);
+        // });
     }
 
     rerender() {
@@ -248,6 +339,13 @@ export class Ui extends Phaser.Scene {
             update: () => {},
             rerender: this.rerenderItem,
             cleanup: this.cleanupItem,
+        });
+
+        this.updates.push({
+            state: SceneState.menu,
+            update: () => {},
+            rerender: this.rerenderMenu,
+            cleanup: this.cleanupMenu,
         });
     }
 
