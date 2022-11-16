@@ -1,4 +1,5 @@
 import { Bullet, BulletDefine } from "../base/bullet";
+import { CannonBarrel } from "../base/cannon";
 import Enemy from "../base/Enemy";
 import { BasicCannon } from "../cannon/BasicCannon";
 
@@ -12,7 +13,7 @@ export class BasicBullet extends Bullet {
     constructor(
         scene: Phaser.Scene,
         target: Enemy,
-        parent: BasicCannon,
+        parent: CannonBarrel,
         x: number,
         y: number
     ) {

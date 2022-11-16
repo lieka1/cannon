@@ -13,10 +13,10 @@ const DistanceSquared = (x1: number, y1: number, x2: number, y2: number) => {
 export class CannonManager {
     data: Array<CannonBase> = [];
     emptyPlace: number[] = [];
-    scene: Phaser.Scene;
+    scene: Main;
     lastUpdate: number;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Main) {
         this.scene = scene;
     }
 
@@ -33,20 +33,8 @@ export class CannonManager {
         }
     }
 
-    addNew(b: CannonBase) {
-        let removed;
-        this.scene.physics.overlap(
-            b,
-            this.data,
-            (e1: CannonBase, _: CannonBase) => {
-                removed = true;
-                e1.destroy();
-            }
-        );
-
-        if (!removed) {
-            this.addToEmpty(b);
-        }
+    addNewCannon(x: number, y: number) {
+        this.addToEmpty(new CannonBase(this.scene, x, y, ))
     }
 
     getCannons() {
@@ -81,17 +69,20 @@ export class CannonManager {
         let s = this.scene as Main;
 
         this.data.forEach((e) => {
+            // get cannon barrel
+            let b = e.getBarrel();
+
             // find closest enemy
-            if (!e.hasTarget()) {
-                let tar = this.closest(e, enemys.data) as Enemy;
+            if (!b.hasTarget()) {
+                let tar = this.closest(b, enemys.data) as Enemy;
 
                 if (!tar) {
                     return;
                 }
 
-                e.setTarget(tar, time);
+                b.setTarget(tar, time);
             } else {
-                e.shot(time, s.bullets);
+                b.shot(time, s.bullets);
             }
         });
 

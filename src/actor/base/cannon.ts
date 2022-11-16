@@ -18,7 +18,7 @@ export interface CannonDefine {
     price: number; // buying price
 }
 
-export class CannonBase extends Physics.Arcade.Sprite {
+export class CannonBarrel extends Physics.Arcade.Sprite{
     protected define: CannonDefine;
     protected level: number = 0; // cannon level
     lastShot: number = 0; // last shot time
@@ -31,35 +31,7 @@ export class CannonBase extends Physics.Arcade.Sprite {
         define: CannonDefine
     ) {
         super(scene, x, y, define.texture.name, define.texture.frame);
-        this.define = define;
-
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
-
-        this.setImmovable();
-
-        this.getBody().velocity.limit(0);
-
-        this.getBody().setCollideWorldBounds(true);
-    }
-
-    protected getBody(): Physics.Arcade.Body {
-        return this.body as Physics.Arcade.Body;
-    }
-
-    hasTarget(): boolean {
-        if (this.target) {
-            return this.target.hp > 0;
-        }
-        return false;
-    }
-
-    startShoot(target: Enemy) {
-        this.target = target;
-    }
-
-    getLevelDefine() {
-        return this.define.levelDefine[this.level];
+ 
     }
 
     setTarget(target: Enemy, time: number) {
@@ -72,9 +44,8 @@ export class CannonBase extends Physics.Arcade.Sprite {
         }
     }
 
-    buildBullet(enemy: Enemy): Bullet {
-        // virtual function
-        throw "build bullet should be override"
+    getLevelDefine() {
+        return this.define.levelDefine[this.level];
     }
 
     shot(time: number, m: BulletManager) {
@@ -88,5 +59,54 @@ export class CannonBase extends Physics.Arcade.Sprite {
 
             this.lastShot = time;
         }
+    }
+
+    buildBullet(enemy: Enemy): Bullet {
+        // virtual function
+        throw "build bullet should be override"
+    }
+
+    hasTarget(): boolean {
+        if (this.target) {
+            return this.target.hp > 0;
+        }
+        return false;
+    }
+
+    startShoot(target: Enemy) {
+        this.target = target;
+    }
+}
+
+export class CannonBase extends Physics.Arcade.Image {
+    barrel?: CannonBarrel;
+
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+    ) {
+        super(scene, x, y, "cannon_base");
+
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+
+        this.setImmovable();
+
+        this.getBody().velocity.limit(0);
+
+        this.getBody().setCollideWorldBounds(true);
+
+        this.setInteractive();
+
+        // this.on("pointer")
+    }
+
+    protected getBody(): Physics.Arcade.Body {
+        return this.body as Physics.Arcade.Body;
+    }
+
+    getBarrel() { 
+        return this.barrel;
     }
 }

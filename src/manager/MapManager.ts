@@ -1,4 +1,5 @@
 import { Data } from "phaser";
+import { CannonBase } from "../actor/base/cannon";
 import { CastleStair } from "../actor/floor/CastleStair";
 import Main from "../game";
 import { Player } from "../player";
@@ -35,6 +36,8 @@ export class MapManager {
     castleFloor: CastleScene;
 
     scene: Main;
+
+    cannonMoutPos: Map<number, CannonBase | undefined> = new Map();
 
     constructor(scene: Main) {
         this.scene = scene;
@@ -411,6 +414,8 @@ export class MapManager {
         this.floorLayer1.wall.setCollisionByProperty({ col: true });
         this.floorLayer2.wall.setCollisionByProperty({ col: true });
         this.floorLayer3.wall.setCollisionByProperty({ col: true });
+        this.floorLayer3.ground.setCollisionByProperty({ col: true });
+        this.castleDoor.setCollisionByProperty({ col: true });
 
         scene.physics.world.setBounds(
             0,
@@ -418,6 +423,15 @@ export class MapManager {
             this.groundLayer.width,
             this.groundLayer.height
         );
+
+        // load mount pos
+        let mountLayer = this.map.getObjectLayer("cannon_mount");
+
+        mountLayer.objects.forEach((e) => {
+            for (var i = e.x + 16; i < e.x + e.width; i += 16) {
+                this.cannonMoutPos.set(this.getMountIDByPos(i, e.y), undefined);
+            }
+        });
     }
 
     showLayer(l: CastleScene) {
@@ -543,11 +557,66 @@ export class MapManager {
             case CastleScene.top:
                 return [this.floorLayer3.wall];
             case CastleScene.topOutside:
-                return [this.floorLayer3.wall, this.castleOut];
+                return [
+                    this.floorLayer3.wall,
+                    this.castleOut,
+                    this.floorLayer3.ground,
+                    this.castleDoor,
+                ];
             case CastleScene.frist:
             case CastleScene.firstOutSide:
-            case CastleScene.doorLooby:
                 return [this.floorLayer1.wall];
+            case CastleScene.doorLooby:
+                return [this.floorLayer1.wall, this.castleDoor];
         }
+    }
+
+    getMountIDByPos = (x: number, y: number) => {
+        return (y << 12) + x;
+    };
+
+    getMountPosById(id: number) {
+        return {
+            x: (id & 0b0000_0000_0000_1111_1111_1111),
+            y: (id & 0b1111_1111_1111_0000_0000_0000) >> 12,
+        }
+    }
+
+    private canMountCannon(i: number) {
+        return (
+            this.cannonMoutPos.has(i) && this.cannonMoutPos.get(i) !== undefined
+        );
+    }
+
+    canMount(x: number, y: number) {
+        if (!this.canMountCannon(this.getMountIDByPos(x, y))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x, y - 1))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x - 1, y))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x - 1, y - 1))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x + 1, y + 1))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x, y + 1))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x + 1, y))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x - 1, y + 1))) {
+            return false;
+        }
+        if (!this.canMountCannon(this.getMountIDByPos(x + 1, y - 1))) {
+            return false;
+        }
+
+        return true;
     }
 }

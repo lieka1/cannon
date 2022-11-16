@@ -82,6 +82,8 @@ export default class Main extends Phaser.Scene {
 
         // init door
         this.Gates = new GateManager(this, this.Map.map);
+        
+        // add some cannon base
     }
 
     ////////////////////////////////////////////

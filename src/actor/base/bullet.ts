@@ -1,5 +1,5 @@
 import { Physics } from "phaser";
-import { CannonBase } from "./cannon";
+import { CannonBarrel, CannonBase } from "./cannon";
 import Enemy from "./Enemy";
 
 interface pos2d {
@@ -22,12 +22,12 @@ export class Bullet extends Physics.Arcade.Image {
     define: BulletDefine;
     enemy: BulletTarget;
     bId: number;
-    fromCannon: CannonBase;
+    fromCannon: CannonBarrel;
 
     constructor(
         scene: Phaser.Scene,
         enemy: Enemy,
-        parent: CannonBase,
+        parent: CannonBarrel,
         x: number,
         y: number,
         define: BulletDefine

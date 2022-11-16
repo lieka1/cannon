@@ -2,8 +2,10 @@ import { Scene } from "phaser";
 import { Ui } from "../../ui";
 import { Text } from "../base/text";
 import { MenuButton, MenuButtonConfig } from "./MenuButton";
+import { MenuPopup } from "./MenuPopup";
 
 export type MenuImageButtonConfig = MenuButtonConfig & {
+    onHover?: ()=> MenuPopup;
 }
 
 export class MenuTextButton extends MenuButton {

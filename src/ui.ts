@@ -1,4 +1,5 @@
 import { Text } from "./actor/base/text";
+import { MenuBackground } from "./actor/ui/MenuBackground";
 import { MenuButton } from "./actor/ui/MenuButton";
 import { MenuTextButton } from "./actor/ui/MenuTextButton";
 import Main from "./game";
@@ -9,6 +10,7 @@ export enum SceneState {
     itemsToBuild = 1 << 1,
     fps = 1 << 2,
     menu = 1 << 3,
+    mountBuild = 1 << 4,
 }
 
 export interface RenderUpdates {
@@ -23,6 +25,8 @@ interface DestroyableItem {
 }
 
 export class Ui extends Phaser.Scene {
+    mainScene: Main;
+
     updates: RenderUpdates[] = [];
 
     items: ItemManager = new ItemManager();
@@ -39,7 +43,7 @@ export class Ui extends Phaser.Scene {
     mainFrames: MenuButton[] = [];
 
     // item feidls
-    itemFrames: Phaser.GameObjects.Rectangle[] = [];
+    itemFrames: MenuButton[] = [];
 
     // configs
     renderConfig: number = SceneState.main;
@@ -48,8 +52,27 @@ export class Ui extends Phaser.Scene {
     // menu feilds
     menus: DestroyableItem[] = [];
 
+    // mount item
+    mountItem: Phaser.GameObjects.Image;
+    mountBackground: MenuBackground;
+    mountBackUnavilableground: MenuBackground;
+    mountItemInfo: {
+        viewX: number;
+        viewY: number;
+        worldX: number;
+        worldY: number;
+
+        hasItem: boolean;
+    } = {
+        viewX: -1000,
+        viewY: -1000,
+        worldX: -1000,
+        worldY: -1000,
+        hasItem: true,
+    };
+
     constructor() {
-        super({ key: "UIScene", active: true });
+        super({ key: "ui", active: true });
 
         this.addState(SceneState.fps);
     }
@@ -96,7 +119,11 @@ export class Ui extends Phaser.Scene {
 
     updateFps(time: number) {
         if (time - this.lastUpdate > 1000) {
-            this.renderFps.setText(`${Math.round(this.game.loop.actualFps)}`);
+            this.renderFps.setText(
+                `${Math.round(this.game.loop.actualFps)} ${
+                    this.mountItemInfo.viewX
+                } ${this.mountItemInfo.viewY}`
+            );
 
             this.lastUpdate = time;
         }
@@ -138,6 +165,67 @@ export class Ui extends Phaser.Scene {
             );
         }
     }
+    ////////////////////////////////////////////
+    ///
+    ///             mount item
+    ///
+    ////////////////////////////////////////////
+
+    cleanupMountItem() {
+        if (this.mountItem) {
+            this.mountItem.destroy();
+            this.mountBackground.destroy();
+        }
+    }
+
+    rerenderMountItem() {
+        this.mountItem = this.add.image(-1000, -1000, "cannon_base");
+
+        this.mountBackground = new MenuBackground(
+            this,
+            -16,
+            -16,
+            32,
+            32,
+            0x00ff00,
+            0xb0
+        );
+
+        this.mountBackUnavilableground = new MenuBackground(
+            this,
+            -16,
+            -16,
+            32,
+            32,
+            0xff0000,
+            0xb0
+        );
+    }
+
+    updateMountItem(time: number) {
+        this.mountItem.setPosition(
+            this.mountItemInfo.viewX,
+            this.mountItemInfo.viewY
+        );
+
+        if (!this.mountItemInfo.hasItem) {
+            this.mountBackground.setPosition(
+                this.mountItemInfo.viewX,
+                this.mountItemInfo.viewY,
+                1000
+            );
+            this.mountBackground.setVisiable(true);
+            this.mountBackUnavilableground.setVisiable(false);
+        } else {
+            this.mountBackUnavilableground.setPosition(
+                this.mountItemInfo.viewX,
+                this.mountItemInfo.viewY,
+                1000
+            );
+            this.mountBackground.setVisiable(false);
+            this.mountBackUnavilableground.setVisiable(true);
+        }
+    }
 
     ////////////////////////////////////////////
     ///
@@ -158,21 +246,25 @@ export class Ui extends Phaser.Scene {
         const itemSizeHalf = this.bottomHeight / 2;
         const totalLen = this.bottomHeight * this.itemCount;
         const leftMargin = (this.game.scale.width - totalLen) / 2;
+        const mountHeight = (totalHeight - this.bottomHeight) / 2;
 
         for (let i = 0; i < this.itemCount; i++) {
             //background
-            this.mainFrames.push(
+            this.itemFrames.push(
                 new MenuButton(
                     this,
-                    () => {},
+                    () => {
+                        this.navigateBuildToMount();
+                    },
                     leftMargin + itemSizeHalf + i * this.bottomHeight,
-                    totalHeight - this.bottomHeight,
+                    mountHeight,
                     this.bottomHeight,
                     this.bottomHeight
                 )
             );
         }
     }
+
     ////////////////////////////////////////////
     ///
     ///             menu
@@ -234,30 +326,25 @@ export class Ui extends Phaser.Scene {
     ////////////////////////////////////////////
     navigateMenuToMain() {
         this.scene.resume("main");
-
         this.addState(SceneState.main);
         this.removeState(SceneState.menu);
     }
 
     navigateBuildTomain() {
         this.scene.resume("main");
-
         this.addState(SceneState.main);
         this.removeState(SceneState.itemsToBuild);
     }
 
     navigateMainToMenu() {
         this.scene.pause("main");
-
         this.addState(SceneState.menu);
         this.removeState(SceneState.main);
     }
 
     navigateMainToBuild() {
         this.scene.pause("main");
-
         this.addState(SceneState.itemsToBuild);
-
         this.removeState(SceneState.main);
     }
 
@@ -267,6 +354,30 @@ export class Ui extends Phaser.Scene {
         } else {
             this.addState(SceneState.fps);
         }
+    }
+
+    navigateBuildToMount() {
+        this.mountItemInfo = {
+            viewX: -1000,
+            viewY: -1000,
+            worldX: -1000,
+            worldY: -1000,
+            hasItem: true,
+        };
+
+        this.addState(SceneState.mountBuild);
+        this.removeState(SceneState.itemsToBuild);
+    }
+
+    navigateMountToBuild() {
+        this.addState(SceneState.itemsToBuild);
+        this.removeState(SceneState.mountBuild);
+    }
+
+    navigateMountToMain() {
+        this.scene.resume("main");
+        this.addState(SceneState.main);
+        this.removeState(SceneState.mountBuild);
     }
 
     ////////////////////////////////////////////
@@ -282,6 +393,47 @@ export class Ui extends Phaser.Scene {
             }
         });
 
+        this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+            if (this.hasState(SceneState.mountBuild)) {
+                // if current is mouting item
+                // find closest mout pos, and render the image
+                const camPosx = this.mainScene.cameras.main.scrollX;
+                const camPosy = this.mainScene.cameras.main.scrollY;
+
+                const x = pointer.worldX + camPosx;
+                const y = pointer.worldY + camPosy;
+
+                let smallestVal = Number.MAX_SAFE_INTEGER;
+                let hasItem = false;
+                let resX: number;
+                let resY: number;
+
+                this.mainScene.Map.cannonMoutPos.forEach((e, key) => {
+                    let cpos = this.mainScene.Map.getMountPosById(key);
+
+                    let r = Phaser.Math.Distance.Between(x, y, cpos.x, cpos.y);
+
+                    if (r < smallestVal) {
+                        resX = cpos.x;
+                        resY = cpos.y;
+                        hasItem = Boolean(e);
+
+                        smallestVal = r;
+                    }
+                });
+
+                // todo : check if target is colliding with player
+
+                this.mountItemInfo = {
+                    viewX: resX - camPosx,
+                    viewY: resY - camPosy,
+                    worldX: resX,
+                    worldY: resY,
+                    hasItem,
+                };
+            }
+        });
+
         this.input.keyboard.on("keyup-ESC", () => {
             if (this.hasState(SceneState.main)) {
                 this.navigateMainToMenu();
@@ -289,12 +441,22 @@ export class Ui extends Phaser.Scene {
                 this.navigateBuildTomain();
             } else if (this.hasState(SceneState.menu)) {
                 this.navigateMenuToMain();
+            } else if (this.hasState(SceneState.mountBuild)) {
+                this.navigateMountToBuild();
             }
         });
 
-        // this.input.on("pointerup", (pointer: any, gameObject: any) => {
-        //     console.log(gameObject);
-        // });
+        this.input.on("pointerup", () => {
+            if (this.hasState(SceneState.mountBuild)) {
+                // check if mount is posiable
+                if (!this.mountItemInfo.hasItem) {
+                    // add monut item to game
+                    this.mainScene.Cannons.addNewCannon(this.mountItemInfo.worldX, this.mountItemInfo.worldY);
+
+                    this.navigateMountToMain();
+                }
+            }
+        });
     }
 
     rerender() {
@@ -315,6 +477,8 @@ export class Ui extends Phaser.Scene {
     }
 
     create(): void {
+        this.mainScene = this.game.scene.getScene("main") as any;
+
         // handle resize
         this.scale.addListener("resize", this.rerender, this);
 
@@ -346,6 +510,13 @@ export class Ui extends Phaser.Scene {
             update: () => {},
             rerender: this.rerenderMenu,
             cleanup: this.cleanupMenu,
+        });
+
+        this.updates.push({
+            state: SceneState.mountBuild,
+            update: this.updateMountItem,
+            rerender: this.rerenderMountItem,
+            cleanup: this.cleanupMountItem,
         });
     }
 
