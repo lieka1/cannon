@@ -1,6 +1,7 @@
 import { Ui } from "../../ui";
+import { MenuBase } from "./MenuBase";
 
-export class MenuBackground {
+export class MenuBackground extends MenuBase {
     highLightgraphics: Phaser.GameObjects.Graphics;
 
     // x: number;
@@ -18,6 +19,8 @@ export class MenuBackground {
         highLightBackgroundAlpha: number,
         radis: number = 0
     ) {
+        super();
+
         // this.x = x;
         // this.y = y;
         // this.width = width;
@@ -32,18 +35,20 @@ export class MenuBackground {
         );
 
         this.highLightgraphics.fillRoundedRect(
-            x,
-            y,
+            -width / 2,
+            -height / 2,
             width,
             height,
             radis
         );
 
         this.highLightgraphics.setVisible(true);
+
+        this.highLightgraphics.setPosition(x + width / 2, y + height / 2);
     }
 
-    setPosition(x:number, y: number,z: number) {
-        this.highLightgraphics.setPosition(x, y, z)
+    setPosition(x: number, y: number, z: number) {
+        this.highLightgraphics.setPosition(x, y, z);
     }
 
     setVisiable(visable: boolean) {

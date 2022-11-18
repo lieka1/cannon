@@ -13,8 +13,8 @@ const BasicCannonDefine: CannonDefine = {
 };
 
 export class BasicCannon extends CannonBarrel {
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, BasicCannonDefine);
+    constructor(scene: Phaser.Scene, parent: CannonBase) {
+        super(scene, parent, BasicCannonDefine);
     }
 
     buildBullet(enemy: Enemy): Bullet {

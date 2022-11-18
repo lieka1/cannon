@@ -34,6 +34,12 @@ import portal_purple_anim from "./asset/map/portal_purple_anim.json";
 ////        load cannon
 //@ts-ignore
 import cannon_base_img from "./asset/cannon/cannon_base.png";
+//@ts-ignore
+import cannon_basic_img from "./asset/cannon/cannon_basic_barrel.png";
+//@ts-ignore
+import cannon_basic_atlas from "./asset/cannon/cannon_basic_barrel_atlas.json";
+//@ts-ignore
+import cannon_basic_anim from "./asset/cannon/cannon_basic_barrel_anim.json";
 ////        load bullet
 //@ts-ignore
 import basic_bullet from "./asset/bullet/basic_bullet.png";
@@ -54,7 +60,7 @@ export default class Main extends Phaser.Scene {
 
     // managers
     bullets: BulletManager = new BulletManager(this);
-    Cannons: CannonManager = new CannonManager(this);
+    Cannons: CannonManager;
     Enemys: EnemyManager;
     Gates: GateManager;
     Map: MapManager;
@@ -84,6 +90,7 @@ export default class Main extends Phaser.Scene {
         this.Gates = new GateManager(this, this.Map.map);
         
         // add some cannon base
+        this.Cannons = new CannonManager(this);
     }
 
     ////////////////////////////////////////////
@@ -162,6 +169,8 @@ export default class Main extends Phaser.Scene {
         // basic bullet
         this.load.image("basic_bullet", basic_bullet);
         this.load.image("cannon_base", cannon_base_img);
+        this.load.atlas("cannon_basic", cannon_basic_img, cannon_basic_atlas);
+        this.load.animation("cannon_basic_shot", cannon_basic_anim);
     }
 
     ////////////////////////////////////////////

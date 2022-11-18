@@ -1,14 +1,14 @@
 import { Scene } from "phaser";
 import { Ui } from "../../ui";
-import { Text } from "../base/text";
+import { MenuText } from "./MenuText";
 import { MenuButton, MenuButtonConfig } from "./MenuButton";
 import { MenuPopup } from "./MenuPopup";
 
 export type MenuImageButtonConfig = MenuButtonConfig & {
-    onHover?: ()=> MenuPopup;
-}
+    onHover?: () => MenuPopup;
+};
 
-export class MenuTextButton extends MenuButton {
+export class MenuImageButton extends MenuButton {
     graphics: Phaser.GameObjects.Graphics;
     x: number;
     y: number;
@@ -25,12 +25,12 @@ export class MenuTextButton extends MenuButton {
         y: number,
         width: number,
         height: number,
-        text: string,
+        texture: string,
         config?: MenuImageButtonConfig
     ) {
         super(scene, onPress, x, y, width, height, config);
 
-        this.texture = new Phaser.GameObjects.Image(scene,x,y,text);
+        this.texture = scene.add.image(x + width / 2, y + height / 2, texture);
     }
 
     destroy() {

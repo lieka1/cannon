@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 import { Ui } from "../../ui";
-import { Text, TextConfig } from "../base/text";
+import { MenuText, TextConfig } from "./MenuText";
 import { MenuButton, MenuButtonConfig } from "./MenuButton";
 
 export type MenuTextButtonConfig = MenuButtonConfig & {
@@ -15,7 +15,7 @@ export class MenuTextButton extends MenuButton {
     height: number;
 
     child: Phaser.GameObjects.GameObject;
-    txt: Text;
+    txt: MenuText;
 
     constructor(
         scene: Ui,
@@ -31,7 +31,7 @@ export class MenuTextButton extends MenuButton {
 
         config = this.initTextConfig(config);
 
-        this.txt = new Text(
+        this.txt = new MenuText(
             scene,
             x + width / 2,
             y + height / 2,

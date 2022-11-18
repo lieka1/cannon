@@ -33,11 +33,9 @@ export class MapManager {
 
     map: Phaser.Tilemaps.Tilemap;
 
-    castleFloor: CastleScene;
+    playerCastleFloor: CastleScene;
 
     scene: Main;
-
-    cannonMoutPos: Map<number, CannonBase | undefined> = new Map();
 
     constructor(scene: Main) {
         this.scene = scene;
@@ -424,18 +422,11 @@ export class MapManager {
             this.groundLayer.height
         );
 
-        // load mount pos
-        let mountLayer = this.map.getObjectLayer("cannon_mount");
 
-        mountLayer.objects.forEach((e) => {
-            for (var i = e.x + 16; i < e.x + e.width; i += 16) {
-                this.cannonMoutPos.set(this.getMountIDByPos(i, e.y), undefined);
-            }
-        });
     }
 
     showLayer(l: CastleScene) {
-        if (l == this.castleFloor) return;
+        if (l == this.playerCastleFloor) return;
 
         switch (l) {
             case CastleScene.frist:
@@ -506,7 +497,7 @@ export class MapManager {
                 break;
         }
 
-        this.castleFloor = l;
+        this.playerCastleFloor = l;
     }
 
     checkMovement(player: Player) {
@@ -525,7 +516,7 @@ export class MapManager {
                 (_, stair: any) => {
                     if (!stair.canChange()) return;
 
-                    let other = stair.getOther(this.castleFloor);
+                    let other = stair.getOther(this.playerCastleFloor);
 
                     this.showLayer(other);
                 },
@@ -536,7 +527,7 @@ export class MapManager {
     }
 
     getStairs() {
-        switch (this.castleFloor) {
+        switch (this.playerCastleFloor) {
             case CastleScene.firstOutSide:
             case CastleScene.frist:
             case CastleScene.doorLooby:
@@ -551,7 +542,7 @@ export class MapManager {
     }
 
     getWall() {
-        switch (this.castleFloor) {
+        switch (this.playerCastleFloor) {
             case CastleScene.second:
                 return [this.floorLayer2.wall];
             case CastleScene.top:
@@ -571,52 +562,6 @@ export class MapManager {
         }
     }
 
-    getMountIDByPos = (x: number, y: number) => {
-        return (y << 12) + x;
-    };
 
-    getMountPosById(id: number) {
-        return {
-            x: (id & 0b0000_0000_0000_1111_1111_1111),
-            y: (id & 0b1111_1111_1111_0000_0000_0000) >> 12,
-        }
-    }
 
-    private canMountCannon(i: number) {
-        return (
-            this.cannonMoutPos.has(i) && this.cannonMoutPos.get(i) !== undefined
-        );
-    }
-
-    canMount(x: number, y: number) {
-        if (!this.canMountCannon(this.getMountIDByPos(x, y))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x, y - 1))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x - 1, y))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x - 1, y - 1))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x + 1, y + 1))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x, y + 1))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x + 1, y))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x - 1, y + 1))) {
-            return false;
-        }
-        if (!this.canMountCannon(this.getMountIDByPos(x + 1, y - 1))) {
-            return false;
-        }
-
-        return true;
-    }
 }

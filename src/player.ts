@@ -27,7 +27,7 @@ export class Player extends Physics.Arcade.Sprite {
 
     bodySize = {
         x: 15,
-        y: 19,
+        y: 28,
     };
 
     constructor(scene: Scene, map: Phaser.Tilemaps.Tilemap) {
@@ -101,6 +101,7 @@ export class Player extends Physics.Arcade.Sprite {
     update(): void {
         let s = this.scene as Main;
 
+
         // check wall collision
         s.Map.checkMovement(this);
 
@@ -111,7 +112,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         if (this.keyW?.isDown) {
             this.body.velocity.y = -this.playerSpeed;
-            this.setOffset(this.body.offset.x, 10);
+            this.setOffset(this.body.offset.x, 5);
 
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
@@ -122,7 +123,7 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.keyA?.isDown) {
             this.body.velocity.x = -this.playerSpeed;
             this.scaleX = -1;
-            this.setOffset(this.bodySize.x + 10, 10);
+            this.setOffset(this.bodySize.x + 10, 5);
 
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
@@ -132,7 +133,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         if (this.keyS?.isDown) {
             this.body.velocity.y = this.playerSpeed;
-            this.setOffset(this.body.offset.x, 10);
+            this.setOffset(this.body.offset.x, 5);
 
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);
@@ -143,7 +144,7 @@ export class Player extends Physics.Arcade.Sprite {
         if (this.keyD?.isDown) {
             this.body.velocity.x = this.playerSpeed;
             this.scaleX = 1;
-            this.setOffset(10, 10);
+            this.setOffset(10, 5);
 
             this.anims.getName() != "player_run" &&
                 this.anims.play("player_run", true);

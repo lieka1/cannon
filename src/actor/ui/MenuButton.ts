@@ -1,4 +1,5 @@
 import { Ui } from "../../ui";
+import { MenuBase } from "./MenuBase";
 
 export interface MenuButtonConfig {
     borderWidth?: number;
@@ -11,7 +12,7 @@ export interface MenuButtonConfig {
     highLightBackgroundAlpha?: number;
 }
 
-export class MenuButton {
+export class MenuButton extends MenuBase {
     graphics: Phaser.GameObjects.Graphics;
     highLightgraphics: Phaser.GameObjects.Graphics;
 
@@ -33,6 +34,7 @@ export class MenuButton {
         height: number,
         config?: MenuButtonConfig
     ) {
+        super();
         this.config = this.initConfig(config);
 
         this.x = x;

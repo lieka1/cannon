@@ -36,7 +36,7 @@ const initTextConfig = (c?: TextConfig) => {
     return c;
 };
 
-export class Text extends GameObjects.Text {
+export class MenuText extends GameObjects.Text {
     constructor(
         scene: Scene,
         x: number,
