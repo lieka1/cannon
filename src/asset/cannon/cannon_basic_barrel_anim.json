@@ -1,7 +1,7 @@
 {
     "anims": [
         {
-            "key": "shot",
+            "key": "cannon_basic_shoot_anim",
             "type": "frames",
             "repeat": 0,
             "frameRate": 12,

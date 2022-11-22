@@ -12,7 +12,7 @@ export class MenuBuildingInfo {
         this.onClose = onClose;
     }
 
-    destory() {
-        throw "MenuBuildingInfo.destory should be overload";
+    destroy() {
+        throw "MenuBuildingInfo.destroy should be overload";
     }
 }

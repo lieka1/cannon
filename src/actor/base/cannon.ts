@@ -1,28 +1,16 @@
 import { Physics } from "phaser";
 import { BulletManager } from "../../manager/BulletManager";
 import { Ui } from "../../ui";
+import { BasicCannonBarrel } from "../barrel/BasicBarrel";
 import { MenuBuildingInfo } from "../ui/extends/MenuBuildingInfo";
 import { MenuImageButton } from "../ui/MenuImageButton";
 import { MenuText } from "../ui/MenuText";
 import { MenuWindow } from "../ui/MenuWindow";
 import { Actor } from "./actor";
+import { CannonBarrel } from "./barrel";
 import { Building } from "./building";
 import { Bullet } from "./bullet";
 import Enemy from "./Enemy";
-
-export interface CannonLevel {
-    damage: number; // single shot damage
-    attackSpeed: number; // attack speed, attack in ms
-    attackRange: number; // range of attacking
-}
-
-export interface CannonDefine {
-    levelDefine: CannonLevel[]; // cannon level
-    name: string; // cannon name
-    texture: { name: string; frame?: number }; // cannon static texture
-    shotAnim: string; // cannon shotting animation
-    price: number; // buying price
-}
 
 class CannonBaseMenu extends MenuBuildingInfo {
     menuWindow: MenuWindow;
@@ -52,7 +40,7 @@ class CannonBaseMenu extends MenuBuildingInfo {
             0,
             windowWidth,
             windowHeight,
-            () =>{
+            () => {
                 this.onClose && this.onClose();
             }
         );
@@ -70,23 +58,31 @@ class CannonBaseMenu extends MenuBuildingInfo {
 
         lastItemHeight += addTxt.height;
 
-        addTxt = new MenuText(scene, 0, lastItemHeight, "select upgrade");
-        // add update info
-        this.menuWindow.addItem(addTxt);
+        if (this.parent.barrel === undefined) {
+            addTxt = new MenuText(scene, 0, lastItemHeight, "select upgrade");
+            // add update info
+            this.menuWindow.addItem(addTxt);
 
-        lastItemHeight += addTxt.height;
+            lastItemHeight += addTxt.height;
 
-        new MenuImageButton(
-            scene,
-            () => {
-                console.log("selected");
-            },
-            0,
-            lastItemHeight + 64 / 2,
-            32,
-            32,
-            "cannon_basic"
-        );
+            let newBtn = new MenuImageButton(
+                scene,
+                () => {
+                    this.parent.upgradeBarrel(
+                        new BasicCannonBarrel(scene.mainScene, this.parent)
+                    );
+                    
+                    this.onClose();
+                },
+                0,
+                lastItemHeight + 64 / 2,
+                32,
+                32,
+                "cannon_basic_barrel"
+            );
+
+            this.menuWindow.addItem(newBtn);
+        }
     }
 
     private getLastItem() {
@@ -95,63 +91,6 @@ class CannonBaseMenu extends MenuBuildingInfo {
 
     destroy() {
         this.menuWindow.destroy();
-    }
-}
-
-export class CannonBarrel extends Physics.Arcade.Sprite {
-    protected define: CannonDefine;
-    protected level: number = 0; // cannon level
-    lastShot: number = 0; // last shot time
-    target?: Enemy;
-
-    constructor(scene: Phaser.Scene, parent: CannonBase, define: CannonDefine) {
-        super(
-            scene,
-            parent.x,
-            parent.y,
-            define.texture.name,
-            define.texture.frame
-        );
-    }
-
-    setTarget(target: Enemy, time: number) {
-        if (
-            Phaser.Math.Distance.Between(this.x, this.y, target.x, target.y) <
-            this.getLevelDefine().attackRange
-        ) {
-            this.target = target;
-            this.lastShot = time;
-        }
-    }
-
-    getLevelDefine() {
-        return this.define.levelDefine[this.level];
-    }
-
-    shot(time: number, m: BulletManager) {
-        if (time - this.lastShot > this.getLevelDefine().attackSpeed) {
-            m.addNew(this.buildBullet(this.target));
-
-            this.anims.play(this.define.shotAnim);
-
-            this.lastShot = time;
-        }
-    }
-
-    buildBullet(enemy: Enemy): Bullet {
-        // virtual function
-        throw "build bullet should be override";
-    }
-
-    hasTarget(): boolean {
-        if (this.target) {
-            return this.target.hp > 0;
-        }
-        return false;
-    }
-
-    startShoot(target: Enemy) {
-        this.target = target;
     }
 }
 
@@ -204,6 +143,6 @@ export class CannonBase extends Building {
     }
 
     getBuildingInfo(scene: Ui): MenuBuildingInfo {
-        return new CannonBaseMenu(scene, this)
+        return new CannonBaseMenu(scene, this);
     }
 }

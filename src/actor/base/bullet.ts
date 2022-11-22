@@ -1,5 +1,6 @@
 import { Physics } from "phaser";
-import { CannonBarrel, CannonBase } from "./cannon";
+import { CannonBarrel } from "./barrel";
+import {  CannonBase } from "./cannon";
 import Enemy from "./Enemy";
 
 interface pos2d {
@@ -10,6 +11,7 @@ interface pos2d {
 export interface BulletDefine {
     name: string;
     texture: string;
+    size: number;
     mov_speed: number;
 }
 
@@ -36,6 +38,8 @@ export class Bullet extends Physics.Arcade.Image {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
+
+        this.setSize(define.size, define.size);
 
         this.fromCannon = parent;
 

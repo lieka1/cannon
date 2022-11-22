@@ -24,19 +24,6 @@ module.exports = {
         filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
     },
-    optimization: {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                extractComments: false,
-                terserOptions: {
-                    output: {
-                        comments: false,
-                    },
-                },
-            }),
-        ],
-    },
     plugins: [
         new HtmlWebpackPlugin({
             template: "./src/asset/index.html",

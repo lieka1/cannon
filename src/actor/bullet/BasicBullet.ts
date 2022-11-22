@@ -1,11 +1,12 @@
+import { CannonBarrel } from "../base/barrel";
 import { Bullet, BulletDefine } from "../base/bullet";
-import { CannonBarrel } from "../base/cannon";
 import Enemy from "../base/Enemy";
-import { BasicCannon } from "../cannon/BasicCannon";
+import { BasicCannonBarrel } from "../barrel/BasicBarrel";
 
 const BasicBulletDefine: BulletDefine = {
     name: "basic bullet",
     texture: "basic_bullet",
+    size: 30,
     mov_speed: 300,
 };
 
@@ -27,7 +28,7 @@ export class BasicBullet extends Bullet {
         );
     }
 
-    getParent(): BasicCannon {
+    getParent(): BasicCannonBarrel {
         return this.fromCannon;
     }
 

@@ -35,11 +35,11 @@ import portal_purple_anim from "./asset/map/portal_purple_anim.json";
 //@ts-ignore
 import cannon_base_img from "./asset/cannon/cannon_base.png";
 //@ts-ignore
-import cannon_basic_img from "./asset/cannon/cannon_basic_barrel.png";
+import cannon_basic_barrel from "./asset/cannon/cannon_basic_barrel.png";
 //@ts-ignore
-import cannon_basic_atlas from "./asset/cannon/cannon_basic_barrel_atlas.json";
+import cannon_basic_barrel_atlas from "./asset/cannon/cannon_basic_barrel_atlas.json";
 //@ts-ignore
-import cannon_basic_anim from "./asset/cannon/cannon_basic_barrel_anim.json";
+import cannon_basic_barrel_anim from "./asset/cannon/cannon_basic_barrel_anim.json";
 ////        load bullet
 //@ts-ignore
 import basic_bullet from "./asset/bullet/basic_bullet.png";
@@ -169,8 +169,8 @@ export default class Main extends Phaser.Scene {
         // basic bullet
         this.load.image("basic_bullet", basic_bullet);
         this.load.image("cannon_base", cannon_base_img);
-        this.load.atlas("cannon_basic", cannon_basic_img, cannon_basic_atlas);
-        this.load.animation("cannon_basic_shot", cannon_basic_anim);
+        this.load.atlas("cannon_basic_barrel", cannon_basic_barrel, cannon_basic_barrel_atlas);
+        this.load.animation("cannon_basic_shot", cannon_basic_barrel_anim);
     }
 
     ////////////////////////////////////////////

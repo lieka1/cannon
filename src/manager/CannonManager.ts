@@ -185,6 +185,8 @@ export class CannonManager {
 
                 b.setTarget(tar, time);
             } else {
+                b.setRotation(b.targetAngle - 3.14 / 2);
+                
                 b.shot(time, s.bullets);
             }
         });

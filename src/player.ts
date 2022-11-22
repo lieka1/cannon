@@ -1,6 +1,6 @@
 import { Input, Physics, Scene } from "phaser";
 import { CannonBase } from "./actor/base/cannon";
-import { BasicCannon } from "./actor/cannon/BasicCannon";
+import { BasicCannonBarrel } from "./actor/barrel/BasicBarrel";
 import Main from "./game";
 import { CastleScene } from "./manager/MapManager";
 
@@ -23,7 +23,6 @@ export class Player extends Physics.Arcade.Sprite {
     private keySpace: Input.Keyboard.Key;
     private playerSpeed = 200;
     facing: PlayerFacing = PlayerFacing.right;
-
 
     bodySize = {
         x: 15,
@@ -101,7 +100,6 @@ export class Player extends Physics.Arcade.Sprite {
     update(): void {
         let s = this.scene as Main;
 
-
         // check wall collision
         s.Map.checkMovement(this);
 
@@ -114,8 +112,7 @@ export class Player extends Physics.Arcade.Sprite {
             this.body.velocity.y = -this.playerSpeed;
             this.setOffset(this.body.offset.x, 5);
 
-            this.anims.getName() != "player_run" &&
-                this.anims.play("player_run", true);
+            this.anims.play("player_run", true);
 
             running = true;
         }
@@ -125,8 +122,7 @@ export class Player extends Physics.Arcade.Sprite {
             this.scaleX = -1;
             this.setOffset(this.bodySize.x + 10, 5);
 
-            this.anims.getName() != "player_run" &&
-                this.anims.play("player_run", true);
+            this.anims.play("player_run", true);
 
             running = true;
         }
@@ -135,8 +131,7 @@ export class Player extends Physics.Arcade.Sprite {
             this.body.velocity.y = this.playerSpeed;
             this.setOffset(this.body.offset.x, 5);
 
-            this.anims.getName() != "player_run" &&
-                this.anims.play("player_run", true);
+            this.anims.play("player_run", true);
 
             running = true;
         }
@@ -146,8 +141,7 @@ export class Player extends Physics.Arcade.Sprite {
             this.scaleX = 1;
             this.setOffset(10, 5);
 
-            this.anims.getName() != "player_run" &&
-                this.anims.play("player_run", true);
+            this.anims.play("player_run", true);
 
             running = true;
         }

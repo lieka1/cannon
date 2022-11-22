@@ -1,34 +1,80 @@
 import { CannonBase } from "../actor/base/cannon";
 import Enemy from "../actor/base/Enemy";
 import { BigDemon } from "../actor/enemy/BigDemon";
+import { BigZombie } from "../actor/enemy/BigZombie";
+import { Chort } from "../actor/enemy/Chort";
+import { Goblin } from "../actor/enemy/Goblin";
+import { IceZombie } from "../actor/enemy/IceZombie";
+import { Imp } from "../actor/enemy/Imp";
+import { MaskedOrc } from "../actor/enemy/MaskedOrc";
+import { Muddy } from "../actor/enemy/Muddy";
+import { Necormancer } from "../actor/enemy/necormancer";
+import { Ogre } from "../actor/enemy/Ogre";
+import { OrcShaman } from "../actor/enemy/OrcShaman";
+import { OrcWarrior } from "../actor/enemy/OrcWarrior";
 import { EnemyPortal } from "../actor/enemy/Portal";
+import { Skelet } from "../actor/enemy/skelet";
+import { Swampy } from "../actor/enemy/swampy";
+import { TinyZomie } from "../actor/enemy/TinyZombie";
+import { Wogol } from "../actor/enemy/Wogol";
+import { Zombie } from "../actor/enemy/Zombie";
 import { GateManager } from "./GateManager";
 
 interface EnemyLevel {
     power: number; // total power of enemy
     count: number; // count of enemy
+    space: number; // wait how long to send next enemy
+    time: number; // max time in this round
 }
 
 const LevelEnemyDefine: EnemyLevel[] = [
+    // first idel wave
+    {
+        power: 0,
+        count: 2,
+        space: 5,
+        time: Number.MAX_VALUE,
+    },
     {
         power: 10,
-        count: 300,
+        count: 2,
+        space: 5,
+        time: 5,
     },
 ];
 
 export class EnemyManager {
+    enmyClasses = [
+        BigZombie,
+        Chort,
+        Goblin,
+        IceZombie,
+        Imp,
+        MaskedOrc,
+        Muddy,
+        Necormancer,
+        Ogre,
+        OrcShaman,
+        OrcWarrior,
+        Skelet,
+        Swampy,
+        TinyZomie,
+        Wogol,
+        Zombie,
+    ];
     wave: number = 0;
-    remain: EnemyLevel = LevelEnemyDefine[0]; // if this wave enemy sended
+    remain: EnemyLevel = LevelEnemyDefine[1]; // if this wave enemy sended
     map: Phaser.Tilemaps.TilemapLayer;
     gate: GateManager;
 
     mapSize: { x: number; y: number };
     scene: Phaser.Scene;
     data: Array<Enemy | undefined> = [];
-    emptyPlace: number[] = []; // todo: add killed enemy to empty place
+    emptyPlace: number[] = [];
 
     portalLeft: EnemyPortal;
     portalRight: EnemyPortal;
+    lastGen: number = 0; // last time genrate a enemy
 
     constructor(
         scene: Phaser.Scene,
@@ -57,6 +103,15 @@ export class EnemyManager {
             true,
             "purple"
         );
+    }
+
+    getInfo(): EnemyLevel {
+        let r = LevelEnemyDefine[this.wave];
+        if (!r) {
+            return LevelEnemyDefine[0];
+        }
+
+        return r;
     }
 
     addNew(b: Enemy) {
@@ -93,28 +148,34 @@ export class EnemyManager {
 
     createEnemy() {
         if (this.remain.count > 0) {
-            let tarGate = this.gate.getRandGate();
+            if (this.lastGen > 5) {
+                let tarGate = this.gate.getRandGate();
 
-            let newItem = new BigDemon(
-                this.scene,
-                this.map,
-                this.randPortal(),
-                tarGate[0],
-                tarGate[1],
-                tarGate[2],
-                tarGate[3]
-            );
+                let newItem = new BigDemon(
+                    this.scene,
+                    this.map,
+                    this.randPortal(),
+                    tarGate[0],
+                    tarGate[1],
+                    tarGate[2],
+                    tarGate[3]
+                );
 
-            this.addNew(newItem);
+                this.addNew(newItem);
 
-            this.scene.physics.moveTo(
-                newItem,
-                tarGate[2].x,
-                tarGate[2].y,
-                newItem.speed
-            );
+                this.scene.physics.moveTo(
+                    newItem,
+                    tarGate[2].x,
+                    tarGate[2].y,
+                    newItem.speed
+                );
 
-            this.remain.count -= 1;
+                this.remain.count -= 1;
+
+                this.lastGen = 0;
+            } else {
+                this.lastGen += 1;
+            }
         }
 
         if (this.emptyPlace.length > 280 && this.remain.count < 20) {
@@ -141,7 +202,6 @@ export class EnemyManager {
                 this.removeDead(e.id);
             }
         });
-
 
         // console.log(this.scene.physics.world.colliders.len)
     }

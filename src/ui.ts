@@ -177,7 +177,7 @@ export class Ui extends Phaser.Scene {
                     totalHeight - this.bottomHeight,
                     this.bottomHeight,
                     this.bottomHeight,
-                    "ll"
+                    ""
                 )
             );
         }
@@ -192,6 +192,7 @@ export class Ui extends Phaser.Scene {
         if (this.mountItem) {
             this.mountItem.destroy();
             this.mountBackground.destroy();
+            this.mountBackUnavilableground.destroy();
         }
     }
 
@@ -339,11 +340,14 @@ export class Ui extends Phaser.Scene {
     ///
     ////////////////////////////////////////////
     cleanupBuildingInfo() {
-        this.menuWindow.destory();
+        this.menuWindow.destroy();
     }
 
     rerenderBuildingInfo() {
         this.menuWindow = this.selectItem.getBuildingInfo(this);
+        this.menuWindow.setCloseFn(()=>{
+            this.navigateInfoToMain();
+        })
     }
 
     ////////////////////////////////////////////
