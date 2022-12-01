@@ -15,6 +15,8 @@ enum PlayerFacing {
     bottomLeft,
 }
 
+export const PLAYER_Z_INDEX = 100;
+
 export class Player extends Physics.Arcade.Sprite {
     private keyW: Input.Keyboard.Key;
     private keyA: Input.Keyboard.Key;
@@ -39,6 +41,7 @@ export class Player extends Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
+        this.setScale(0.8)
 
         // KEYS
         this.keyW = this.scene.input.keyboard.addKey("W");
@@ -53,6 +56,8 @@ export class Player extends Physics.Arcade.Sprite {
 
         // PHYSICS
         this.body.setSize(this.bodySize.x, this.bodySize.y);
+
+        this.setDepth(PLAYER_Z_INDEX);
 
         this.on("destroy", () => {
             this.keySpace.removeAllListeners();
@@ -119,7 +124,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         if (this.keyA?.isDown) {
             this.body.velocity.x = -this.playerSpeed;
-            this.scaleX = -1;
+            this.scaleX = -0.8;
             this.setOffset(this.bodySize.x + 10, 5);
 
             this.anims.play("player_run", true);
@@ -138,7 +143,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         if (this.keyD?.isDown) {
             this.body.velocity.x = this.playerSpeed;
-            this.scaleX = 1;
+            this.scaleX = 0.8;
             this.setOffset(10, 5);
 
             this.anims.play("player_run", true);

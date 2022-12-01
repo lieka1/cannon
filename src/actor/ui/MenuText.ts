@@ -18,7 +18,7 @@ const initTextConfig = (c?: TextConfig) => {
     }
 
     if (!c.fontSize) {
-        c.fontSize = "calc(100vw / 25)";
+        c.fontSize = "calc(100vw / 50)";
     }
 
     if (!c.stroke) {
@@ -56,5 +56,25 @@ export class MenuText extends GameObjects.Text {
         this.setOrigin(config.origin[0], config.origin[1]);
 
         scene.add.existing(this);
+    }
+}
+
+export class MenuTextUpdatable extends MenuText {
+    cbUpdate: () => void;
+
+    constructor(
+        scene: Scene,
+        x: number,
+        y: number,
+        text: string,
+        cb: () => void,
+        config?: TextConfig
+    ) {
+        super(scene, x, y, text, config);
+        this.cbUpdate = cb;
+    }
+
+    update() {
+        this.cbUpdate();
     }
 }

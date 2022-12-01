@@ -2,11 +2,27 @@ import { Scene } from "phaser";
 import { Ui } from "../../ui";
 import { MenuText } from "./MenuText";
 import { MenuButton, MenuButtonConfig } from "./MenuButton";
-import { MenuPopup } from "./MenuPopup";
 
 export type MenuImageButtonConfig = MenuButtonConfig & {
-    onHover?: () => MenuPopup;
+    resize?: boolean;
 };
+
+const initMenuImageButtonConfig = (c?: MenuImageButtonConfig) =>{ 
+    if (!c) {
+        c=  {}
+    }
+
+    if (!c.resize) { 
+        c.resize = false;
+    }
+
+    return c;
+}
+
+export interface ImageConfig {
+    texture: string;
+    frame?: number | string;
+}
 
 export class MenuImageButton extends MenuButton {
     graphics: Phaser.GameObjects.Graphics;
@@ -25,12 +41,26 @@ export class MenuImageButton extends MenuButton {
         y: number,
         width: number,
         height: number,
-        texture: string,
+        texture: ImageConfig,
         config?: MenuImageButtonConfig
     ) {
         super(scene, onPress, x, y, width, height, config);
 
-        this.texture = scene.add.image(x + width / 2, y + height / 2, texture);
+        config = initMenuImageButtonConfig(config);
+
+        this.texture = scene.add.image(
+            x + width / 2,
+            y + height / 2,
+            texture.texture,
+            texture.frame
+        );
+
+        if (config.resize) {
+            this.texture.setScale(
+                width / this.texture.width,
+                height / this.texture.height
+            );
+        }
     }
 
     destroy() {

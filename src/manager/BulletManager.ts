@@ -43,7 +43,7 @@ export class BulletManager {
 
             this.scene.physics.overlap(
                 e,
-                enemys.data,
+                enemys.enemys,
                 (b: Bullet, e: Enemy) => {
                     b.hit(e);
                 }

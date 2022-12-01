@@ -2,86 +2,224 @@ import { Physics } from "phaser";
 import { BulletManager } from "../../manager/BulletManager";
 import { Ui } from "../../ui";
 import { BasicCannonBarrel } from "../barrel/BasicBarrel";
-import { MenuBuildingInfo } from "../ui/extends/MenuBuildingInfo";
+import { FireCannonBarrel } from "../barrel/fireCannon";
+import { OilCannonBarrel } from "../barrel/OilBarrel";
+import { ScatterCannonBarrel } from "../barrel/ScatterBarrel";
+import { SnipCannonBarrel } from "../barrel/SnipCannon";
+import { WaterCannonBarrel } from "../barrel/WaterBarrel";
+import { ALIGNTRIGHT_FLAG } from "../ui/MenuButton";
+import { MenuHover } from "../ui/MenuHover";
 import { MenuImageButton } from "../ui/MenuImageButton";
 import { MenuText } from "../ui/MenuText";
+import { MenuTextButton } from "../ui/MenuTextButton";
 import { MenuWindow } from "../ui/MenuWindow";
-import { Actor } from "./actor";
 import { CannonBarrel } from "./barrel";
-import { Building } from "./building";
+import { Building, MenuBuildingInfo } from "./building";
 import { Bullet } from "./bullet";
 import Enemy from "./Enemy";
 
 class CannonBaseMenu extends MenuBuildingInfo {
-    menuWindow: MenuWindow;
     parent: CannonBase;
 
     constructor(scene: Ui, selected: CannonBase) {
-        super();
+        super(scene, "cannon");
 
         this.parent = selected;
-        // config widnow size
-        let windowWidth = 800;
-        let windowHeight = 600;
 
-        let windowScale = scene.game.scale;
-
-        if (windowScale.height < 800) {
-            windowHeight = windowScale.height / 2;
-        }
-
-        if (windowScale.width < 1000) {
-            windowWidth = windowScale.width / 2;
-        }
-
-        this.menuWindow = new MenuWindow(
+        let removeBtn = new MenuTextButton(
             scene,
-            0,
-            0,
-            windowWidth,
-            windowHeight,
             () => {
+                this.parent.destroy();
+                this.destroy();
                 this.onClose && this.onClose();
-            }
+            },
+            ALIGNTRIGHT_FLAG | (this.menuWindow.x + this.menuWindow.width),
+            this.buildHeight + 10,
+            "remove"
         );
 
-        let lastItemHeight = this.menuWindow.config.headerHeight;
+        this.menuWindow.addItem(removeBtn);
 
-        let addTxt = new MenuText(
-            scene,
-            0,
-            lastItemHeight,
-            `${this.parent.name}: `
-        );
-        // add name info
-        this.menuWindow.addItem(addTxt);
-
-        lastItemHeight += addTxt.height;
+        this.buildHeight += removeBtn.height + 20;
 
         if (this.parent.barrel === undefined) {
-            addTxt = new MenuText(scene, 0, lastItemHeight, "select upgrade");
+            let addTxt = new MenuText(
+                scene,
+                0,
+                this.buildHeight,
+                "select upgrade"
+            );
             // add update info
             this.menuWindow.addItem(addTxt);
 
-            lastItemHeight += addTxt.height;
+            this.buildHeight += addTxt.height;
 
+            // basic barrel
             let newBtn = new MenuImageButton(
                 scene,
                 () => {
                     this.parent.upgradeBarrel(
                         new BasicCannonBarrel(scene.mainScene, this.parent)
                     );
-                    
+
                     this.onClose();
                 },
                 0,
-                lastItemHeight + 64 / 2,
+                this.buildHeight + 64 / 2,
                 32,
                 32,
-                "cannon_basic_barrel"
+                { texture: "cannon_barrel_img", frame: "cannon_basic_barrel_1" }
             );
 
             this.menuWindow.addItem(newBtn);
+
+            this.menuWindow.addEventItem(
+                new MenuHover(scene, newBtn, "A basic cannon")
+            );
+
+            // fire barrel
+            newBtn = new MenuImageButton(
+                scene,
+                () => {
+                    this.parent.upgradeBarrel(
+                        new FireCannonBarrel(scene.mainScene, this.parent)
+                    );
+
+                    this.onClose();
+                },
+                32 + 32 / 2,
+                this.buildHeight + 64 / 2,
+                32,
+                32,
+                { texture: "cannon_barrel_img", frame: "cannon_fire_barrel_1" }
+            );
+
+            this.menuWindow.addItem(newBtn);
+
+            this.menuWindow.addEventItem(
+                new MenuHover(
+                    scene,
+                    newBtn,
+                    "A fire cannon,\ndeal fire damage every second"
+                )
+            );
+
+            // water barrel
+            newBtn = new MenuImageButton(
+                scene,
+                () => {
+                    this.parent.upgradeBarrel(
+                        new WaterCannonBarrel(scene.mainScene, this.parent)
+                    );
+
+                    this.onClose();
+                },
+                (32 + 32 / 2) * 2,
+                this.buildHeight + 64 / 2,
+                32,
+                32,
+                { texture: "cannon_barrel_img", frame: "cannon_water_barrel_1" }
+            );
+
+            this.menuWindow.addItem(newBtn);
+
+            this.menuWindow.addEventItem(
+                new MenuHover(
+                    scene,
+                    newBtn,
+                    "A water cannon,\nadd wet buff to enemy"
+                )
+            );
+
+            // oil barrel
+            newBtn = new MenuImageButton(
+                scene,
+                () => {
+                    this.parent.upgradeBarrel(
+                        new OilCannonBarrel(scene.mainScene, this.parent)
+                    );
+
+                    this.onClose();
+                },
+                (32 + 32 / 2) * 3,
+                this.buildHeight + 64 / 2,
+                32,
+                32,
+                { texture: "cannon_barrel_img", frame: "cannon_oil_barrel_1" }
+            );
+
+            this.menuWindow.addItem(newBtn);
+
+            this.menuWindow.addEventItem(
+                new MenuHover(
+                    scene,
+                    newBtn,
+                    "A water cannon,\nadd oil buff to enemy"
+                )
+            );
+            // scatter barrel
+            newBtn = new MenuImageButton(
+                scene,
+                () => {
+                    this.parent.upgradeBarrel(
+                        new ScatterCannonBarrel(scene.mainScene, this.parent)
+                    );
+
+                    this.onClose();
+                },
+                (32 + 32 / 2) * 4,
+                this.buildHeight + 64 / 2,
+                32,
+                32,
+                {
+                    texture: "cannon_barrel_img",
+                    frame: "cannon_scatter_barrel_1",
+                }
+            );
+
+            this.menuWindow.addItem(newBtn);
+
+            this.menuWindow.addEventItem(
+                new MenuHover(
+                    scene,
+                    newBtn,
+                    "A scatter cannon,\nattack multiple enemy at same time"
+                )
+            );
+
+            // snip barrel
+            newBtn = new MenuImageButton(
+                scene,
+                () => {
+                    this.parent.upgradeBarrel(
+                        new SnipCannonBarrel(scene.mainScene, this.parent)
+                    );
+
+                    this.onClose();
+                },
+                (32 + 32 / 2) * 5,
+                this.buildHeight + 64 / 2,
+                32,
+                32,
+                { texture: "cannon_barrel_img", frame: "cannon_snip_barrel_1" }
+            );
+
+            this.menuWindow.addItem(newBtn);
+
+            this.menuWindow.addEventItem(
+                new MenuHover(
+                    scene,
+                    newBtn,
+                    "A snip cannon,\nattack most hp enemy in range"
+                )
+            );
+        } else {
+            // render barrel menu
+            this.parent.barrel.buildMenu(
+                scene,
+                this,
+                this.buildHeight
+            );
         }
     }
 
@@ -107,13 +245,7 @@ export class CannonBase extends Building {
 
         this.setImmovable();
 
-        this.getBody().velocity.limit(0);
-
-        this.getBody().setCollideWorldBounds(true);
-
         this.setInteractive();
-
-        // this.on("pointer")
     }
 
     protected getBody(): Physics.Arcade.Body {
@@ -144,5 +276,13 @@ export class CannonBase extends Building {
 
     getBuildingInfo(scene: Ui): MenuBuildingInfo {
         return new CannonBaseMenu(scene, this);
+    }
+
+    destroy(): void {
+        if (this.barrel) {
+            this.barrel.destroy();
+        }
+
+        super.destroy();
     }
 }

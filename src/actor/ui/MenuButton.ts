@@ -1,5 +1,6 @@
 import { Ui } from "../../ui";
 import { MenuBase } from "./MenuBase";
+import { MenuHover } from "./MenuHover";
 
 export interface MenuButtonConfig {
     borderWidth?: number;
@@ -10,11 +11,17 @@ export interface MenuButtonConfig {
     backgroundAlpha?: number;
     highLightBackgroundColor?: number;
     highLightBackgroundAlpha?: number;
+    zIndex?: number;
 }
+
+export const ALIGNTRIGHT_FLAG = 0b1000000000000;
 
 export class MenuButton extends MenuBase {
     graphics: Phaser.GameObjects.Graphics;
     highLightgraphics: Phaser.GameObjects.Graphics;
+    disablegraphics: Phaser.GameObjects.Graphics;
+
+    disabled: boolean;
 
     x: number;
     y: number;
@@ -25,8 +32,10 @@ export class MenuButton extends MenuBase {
 
     config: MenuButtonConfig;
 
+    popOver: MenuHover;
+
     constructor(
-        sence: Ui,
+        scene: Ui,
         onPress: () => void,
         x: number,
         y: number,
@@ -42,7 +51,7 @@ export class MenuButton extends MenuBase {
         this.width = width;
         this.height = height;
 
-        this.graphics = sence.add.graphics();
+        this.graphics = scene.add.graphics();
 
         // render boundary
         this.graphics.lineStyle(
@@ -74,7 +83,7 @@ export class MenuButton extends MenuBase {
         );
 
         // highlight graphics
-        this.highLightgraphics = sence.add.graphics();
+        this.highLightgraphics = scene.add.graphics();
 
         this.highLightgraphics.fillStyle(
             this.config.highLightBackgroundColor,
@@ -88,6 +97,20 @@ export class MenuButton extends MenuBase {
             this.height,
             this.config.radius
         );
+
+        this.disablegraphics = scene.add.graphics();
+
+        this.disablegraphics.fillStyle(0xff0000, 0xa0);
+
+        this.disablegraphics.fillRoundedRect(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.config.radius
+        );
+
+        this.disablegraphics.setVisible(false);
 
         this.renderInside();
 
@@ -108,16 +131,38 @@ export class MenuButton extends MenuBase {
             },
         });
 
+        this.graphics.setPosition(
+            this.graphics.x,
+            this.graphics.y,
+            this.config.zIndex
+        );
+        this.highLightgraphics.setPosition(
+            this.highLightgraphics.x,
+            this.highLightgraphics.y,
+            this.config.zIndex
+        );
+        this.disablegraphics.setPosition(
+            this.disablegraphics.x,
+            this.disablegraphics.y,
+            this.config.zIndex
+        );
+
         this.graphics.on("pointerup", () => {
-            onPress();
+            if (!this.disabled) {
+                onPress();
+            }
         });
 
         this.graphics.on("pointerover", () => {
-            this.renderHighlightInside();
+            if (!this.disabled) {
+                this.renderHighlightInside();
+            }
         });
 
         this.graphics.on("pointerout", () => {
-            this.renderInside();
+            if (!this.disabled) {
+                this.renderInside();
+            }
         });
     }
 
@@ -132,6 +177,10 @@ export class MenuButton extends MenuBase {
     initConfig(c: MenuButtonConfig) {
         if (!c) {
             c = {};
+        }
+
+        if (!c.zIndex) {
+            c.zIndex = 0;
         }
 
         if (!c.borderWidth) {
@@ -172,5 +221,20 @@ export class MenuButton extends MenuBase {
     destroy() {
         this.graphics.destroy();
         this.highLightgraphics.destroy();
+        this.disablegraphics.destroy();
+    }
+
+    disable() {
+        if (!this.disabled) {
+            this.disablegraphics.setVisible(true);
+            this.disabled = true;
+        }
+    }
+
+    enable() {
+        if (this.disabled) {
+            this.disablegraphics.setVisible(true);
+            this.disabled = false;
+        }
     }
 }

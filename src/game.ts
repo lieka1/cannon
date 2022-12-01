@@ -35,25 +35,40 @@ import portal_purple_anim from "./asset/map/portal_purple_anim.json";
 //@ts-ignore
 import cannon_base_img from "./asset/cannon/cannon_base.png";
 //@ts-ignore
-import cannon_basic_barrel from "./asset/cannon/cannon_basic_barrel.png";
+import cannon_barrel_img from "./asset/cannon/cannon_barrel_img.png";
 //@ts-ignore
-import cannon_basic_barrel_atlas from "./asset/cannon/cannon_basic_barrel_atlas.json";
+import cannon_barrel_atlas from "./asset/cannon/cannon_barrel_atlas.json";
 //@ts-ignore
-import cannon_basic_barrel_anim from "./asset/cannon/cannon_basic_barrel_anim.json";
+import cannon_barrel_anim from "./asset/cannon/cannon_barrel_anim.json";
 ////        load bullet
 //@ts-ignore
 import basic_bullet from "./asset/bullet/basic_bullet.png";
+////        load building
+//@ts-ignore
+import building_gold_mine from "./asset/building/gold_mine.png";
+//@ts-ignore
+import building_tavern from "./asset/building/tavern.png";
+//@ts-ignore
+import building_refinery from "./asset/building/refinery.png";
+//@ts-ignore
+import building_room from "./asset/building/room.png";
+//@ts-ignore
+import building_library from "./asset/building/library.png";
+//@ts-ignore
 
 import { Player } from "./player";
 import Enemy from "./actor/base/Enemy";
 import util from "./util";
-import { Actor } from "./actor/base/actor";
 import { BulletManager } from "./manager/BulletManager";
 import { CannonManager } from "./manager/CannonManager";
 import { EnemyManager } from "./manager/EnemyManager";
 import { EnemyPortal } from "./actor/enemy/Portal";
 import { GateManager } from "./manager/GateManager";
 import { MapManager } from "./manager/MapManager";
+import { GoldManager } from "./manager/GoldManager";
+import { BuildingManager } from "./manager/BuildingManager";
+import { Ui } from "./ui";
+import { SoliderManager } from "./manager/SoliderManager";
 
 export default class Main extends Phaser.Scene {
     player: Player;
@@ -64,6 +79,9 @@ export default class Main extends Phaser.Scene {
     Enemys: EnemyManager;
     Gates: GateManager;
     Map: MapManager;
+    gold: GoldManager = new GoldManager();
+    Building: BuildingManager;
+    Soliders = new SoliderManager(this);
 
     constructor() {
         super("main");
@@ -80,6 +98,11 @@ export default class Main extends Phaser.Scene {
         this.load.image("background_ground", background_groud);
         this.load.image("background_castle", background_castle);
         this.load.image("background_interior", background_interior);
+        this.load.image("building_gold_mine", building_gold_mine);
+        this.load.image("building_tavern", building_tavern);
+        this.load.image("building_refinery", building_refinery);
+        this.load.image("building_room", building_room);
+        this.load.image("building_library", building_library);
     }
 
     createMap() {
@@ -88,9 +111,11 @@ export default class Main extends Phaser.Scene {
 
         // init door
         this.Gates = new GateManager(this, this.Map.map);
-        
+
         // add some cannon base
         this.Cannons = new CannonManager(this);
+
+        this.Building = new BuildingManager(this);
     }
 
     ////////////////////////////////////////////
@@ -169,8 +194,12 @@ export default class Main extends Phaser.Scene {
         // basic bullet
         this.load.image("basic_bullet", basic_bullet);
         this.load.image("cannon_base", cannon_base_img);
-        this.load.atlas("cannon_basic_barrel", cannon_basic_barrel, cannon_basic_barrel_atlas);
-        this.load.animation("cannon_basic_shot", cannon_basic_barrel_anim);
+        this.load.atlas(
+            "cannon_barrel_img",
+            cannon_barrel_img,
+            cannon_barrel_atlas
+        );
+        this.load.animation("cannon_basic_shot", cannon_barrel_anim);
     }
 
     ////////////////////////////////////////////
@@ -180,6 +209,10 @@ export default class Main extends Phaser.Scene {
     ////////////////////////////////////////////
 
     preload() {
+        if ((this.scene.get("ui") as Ui).mainScene === null) {
+            return;
+        }
+
         this.loadMap();
         this.loadPlayer();
         this.loadEnemy();
@@ -196,6 +229,16 @@ export default class Main extends Phaser.Scene {
 
         // create enemy
         this.initEnemy();
+
+        // start ui
+        let ui = this.game.scene.getScene("ui") as Ui;
+
+        if (!ui.mainScene === null) {
+            ui.mainScene = this;
+            ui.reinitState();
+        } else {
+            this.game.scene.start("ui");
+        }
     }
 
     update(time: number, delta: number) {
@@ -203,5 +246,8 @@ export default class Main extends Phaser.Scene {
         this.Cannons.update(time, delta, this.Enemys);
         this.bullets.update(this.Enemys);
         this.Enemys.update();
+        this.Soliders.update();
+        this.Building.update();
+        this.Gates.update();
     }
 }

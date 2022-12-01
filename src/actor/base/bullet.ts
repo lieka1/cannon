@@ -1,4 +1,5 @@
 import { Physics } from "phaser";
+import { BuildingZindex } from "../../manager/BuildingManager";
 import { CannonBarrel } from "./barrel";
 import {  CannonBase } from "./cannon";
 import Enemy from "./Enemy";
@@ -47,6 +48,8 @@ export class Bullet extends Physics.Arcade.Image {
             target: enemy,
             targetPos: { x: enemy.x, y: enemy.y },
         };
+        
+        this.setDepth(BuildingZindex.topFloorItem)
     }
 
     setId(id: number) {

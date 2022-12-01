@@ -16,9 +16,12 @@ export class BasicBullet extends Bullet {
         target: Enemy,
         parent: CannonBarrel,
         x: number,
-        y: number
+        y: number,
+        scale: number = 1,
     ) {
         super(scene, target, parent, x, y, BasicBulletDefine);
+
+        this.setScale(scale);
 
         scene.physics.moveTo(
             this,

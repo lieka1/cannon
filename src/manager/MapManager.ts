@@ -3,6 +3,7 @@ import { CannonBase } from "../actor/base/cannon";
 import { CastleStair } from "../actor/floor/CastleStair";
 import Main from "../game";
 import { Player } from "../player";
+import { BuildingZindex } from "./BuildingManager";
 
 // a floor in the castle
 interface CastleFloorMap {
@@ -11,7 +12,7 @@ interface CastleFloorMap {
 }
 
 export enum CastleScene {
-    frist, // first floor
+    first, // first floor
     second, // second floor
     top, // in the sentry
     topOutside, // render out side
@@ -36,6 +37,18 @@ export class MapManager {
     playerCastleFloor: CastleScene;
 
     scene: Main;
+
+    groundLeftGate: { x: number; y: number; width: number; height: number };
+    groundRightGate: { x: number; y: number; width: number; height: number };
+
+    firstSecLeftStair: { x: number; y: number; width: number; height: number };
+    firstSecRightStair: { x: number; y: number; width: number; height: number };
+
+    leftDoor: { x: number; y: number; width: number; height: number };
+    centerDoor: { x: number; y: number; width: number; height: number };
+    rightDoor: { x: number; y: number; width: number; height: number };
+
+    centerX: number;
 
     constructor(scene: Main) {
         this.scene = scene;
@@ -79,6 +92,9 @@ export class MapManager {
             ),
         };
 
+        this.floorLayer1.wall.setDepth(BuildingZindex.firstFloor);
+        this.floorLayer1.ground.setDepth(BuildingZindex.firstFloor);
+
         // floor 2
         this.floorLayer2 = {
             ground: this.map.createLayer(
@@ -91,6 +107,9 @@ export class MapManager {
             ),
         };
 
+        this.floorLayer2.wall.setDepth(BuildingZindex.SecondFloorInterior);
+        this.floorLayer2.ground.setDepth(BuildingZindex.SecondFloor);
+
         // floor 3
         this.floorLayer3 = {
             ground: this.map.createLayer("castle/castleTop/castleTop", tails),
@@ -100,6 +119,9 @@ export class MapManager {
             ),
         };
 
+        this.floorLayer3.wall.setDepth(BuildingZindex.topFloorItem);
+        this.floorLayer3.ground.setDepth(BuildingZindex.topFloor);
+
         this.castleOut = this.map.createLayer(
             "castle/castleTop/castleTop_sentry",
             tails
@@ -108,6 +130,9 @@ export class MapManager {
             "castle/castleTop/castleground_door",
             tails
         );
+
+        this.castleDoor.setDepth(BuildingZindex.topFloorItem);
+        this.castleOut.setDepth(BuildingZindex.topFloorItem);
 
         this.showLayer(CastleScene.topOutside);
 
@@ -159,7 +184,7 @@ export class MapManager {
             (e) => e.name === "left_door_entry"
         );
         let right_door_out = tar.objects.find(
-            (e) => e.name === "right_castle_out"
+            (e) => e.name === "right_door_out"
         );
         let right_door_entry = tar.objects.find(
             (e) => e.name === "right_door_entry"
@@ -177,7 +202,7 @@ export class MapManager {
                 stair_0_1_left.y,
                 stair_0_1_left.width,
                 stair_0_1_left.height,
-                CastleScene.frist,
+                CastleScene.first,
                 CastleScene.second
             )
         );
@@ -188,7 +213,7 @@ export class MapManager {
                 stair_0_1_right.y,
                 stair_0_1_right.width,
                 stair_0_1_right.height,
-                CastleScene.frist,
+                CastleScene.first,
                 CastleScene.second
             )
         );
@@ -199,8 +224,8 @@ export class MapManager {
                 right_castle_entry.y,
                 right_castle_entry.width,
                 right_castle_entry.height,
-                CastleScene.frist,
-                CastleScene.frist
+                CastleScene.first,
+                CastleScene.first
             )
         );
         this.stair_0_1.push(
@@ -221,8 +246,8 @@ export class MapManager {
                 left_castle_entry.y,
                 left_castle_entry.width,
                 left_castle_entry.height,
-                CastleScene.frist,
-                CastleScene.frist
+                CastleScene.first,
+                CastleScene.first
             )
         );
         this.stair_0_1.push(
@@ -406,6 +431,57 @@ export class MapManager {
             )
         );
 
+        this.firstSecLeftStair = {
+            x: stair_0_1_left.x,
+            y: stair_0_1_left.y,
+            width: stair_0_1_left.width,
+            height: stair_0_1_left.height,
+        };
+
+        this.firstSecRightStair = {
+            x: stair_0_1_right.x,
+            y: stair_0_1_right.y,
+            width: stair_0_1_right.width,
+            height: stair_0_1_right.height,
+        };
+
+        this.groundLeftGate = {
+            x: left_castle_entry.x,
+            y: left_castle_entry.y,
+            width: left_castle_entry.width,
+            height: left_castle_entry.height,
+        };
+
+        this.groundRightGate = {
+            x: right_castle_entry.x,
+            y: right_castle_entry.y,
+            width: right_castle_entry.width,
+            height: right_castle_entry.height,
+        };
+
+        this.rightDoor = {
+            x: right_door_out.x,
+            y: right_door_out.y,
+            width: right_door_out.width,
+            height: right_door_out.height,
+        };
+
+        this.leftDoor = {
+            x: left_door_out.x,
+            y: left_door_out.y,
+            width: left_door_out.width,
+            height: left_door_out.height,
+        };
+
+        this.centerDoor = {
+            x: mid_door_out.x,
+            y: mid_door_out.y,
+            width: mid_door_out.width,
+            height: mid_door_out.height,
+        };
+
+        this.centerX = this.floorLayer1.ground.width / 2;
+
         // load physics
         this.groundLayer.setCollisionByProperty({ col: true });
 
@@ -421,15 +497,13 @@ export class MapManager {
             this.groundLayer.width,
             this.groundLayer.height
         );
-
-
     }
 
     showLayer(l: CastleScene) {
         if (l == this.playerCastleFloor) return;
 
         switch (l) {
-            case CastleScene.frist:
+            case CastleScene.first:
                 this.floorLayer1.ground.setVisible(true);
                 this.floorLayer1.wall.setVisible(true);
                 this.floorLayer2.ground.setVisible(false);
@@ -529,7 +603,7 @@ export class MapManager {
     getStairs() {
         switch (this.playerCastleFloor) {
             case CastleScene.firstOutSide:
-            case CastleScene.frist:
+            case CastleScene.first:
             case CastleScene.doorLooby:
                 return [this.stair_0_1];
             case CastleScene.second:
@@ -554,14 +628,11 @@ export class MapManager {
                     this.floorLayer3.ground,
                     this.castleDoor,
                 ];
-            case CastleScene.frist:
+            case CastleScene.first:
             case CastleScene.firstOutSide:
                 return [this.floorLayer1.wall];
             case CastleScene.doorLooby:
                 return [this.floorLayer1.wall, this.castleDoor];
         }
     }
-
-
-
 }

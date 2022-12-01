@@ -1,0 +1,292 @@
+{
+    "anims": [
+        {
+            "key": "lighting_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_lighting_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_lighting_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_lighting_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_lighting_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "air_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_air_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_air_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_air_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_air_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "magic_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_magic_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_magic_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_magic_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_magic_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "fire_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_fire_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_fire_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_fire_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_fire_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "basic_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_basic_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_basic_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_basic_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_basic_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "advance_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_advance_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_advance_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_advance_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_advance_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "mortar_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_mortar_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_mortar_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_mortar_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_mortar_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "nuclear_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_nuclear_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_nuclear_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_nuclear_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_nuclear_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "oil_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_oil_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_oil_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_oil_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_oil_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "scatter_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_scatter_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_scatter_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_scatter_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_scatter_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "snip_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_snip_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_snip_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_snip_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_snip_barrel_4"
+                }
+            ]
+        },
+        {
+            "key": "water_barrel_shot",
+            "type": "frames",
+            "repeat": 0,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_water_barrel_1"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_water_barrel_2"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_water_barrel_3"
+                },
+                {
+                    "key": "cannon_barrel_img",
+                    "frame": "cannon_water_barrel_4"
+                }
+            ]
+        }
+    ]
+}

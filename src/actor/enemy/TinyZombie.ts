@@ -6,31 +6,35 @@ const TinyZomieDefine: EnemyDefine = {
     name: "TinyZomie",
     idle_anim: "tiny_zombie_idle",
     run_anim: "tiny_zombie_run",
-    size: { width: 10, height: 30 },
-    speedRange: { base: 100, range: 30 },
+    size: { width: 5, height: 5 },
+    speedRange: { base: 50, range: 10 },
     health: 1,
-};
+    gold: 1,
+    damage: {
+        attackSpeed: 2000,
+        attackDamage: 1,
+    }};
 
 export class TinyZomie extends Enemy {
     constructor(
         scene: Phaser.Scene,
-        map: Phaser.Tilemaps.TilemapLayer,
         portal: EnemyPortal,
         target: Phaser.GameObjects.Rectangle,
         targetPos: { x: number; y: number },
         target1: Phaser.GameObjects.Rectangle,
-        targetPos1: { x: number; y: number }
+        targetPos1: { x: number; y: number },
+        targetIndex: number
     ) {
         super(
             scene,
-            map,
             portal.x,
             portal.y,
             TinyZomieDefine,
             target,
             targetPos,
             target1,
-            targetPos1
+            targetPos1,
+            targetIndex
         );
     }
 }
